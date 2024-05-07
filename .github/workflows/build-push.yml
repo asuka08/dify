@@ -11,8 +11,8 @@ on:
 env:
   DOCKERHUB_USER: ${{ secrets.DOCKER_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
-  DIFY_WEB_IMAGE_NAME: ${{ vars.DIFY_WEB_IMAGE_NAME || format('{0}/dify-api', secrets.DOCKER_USERNAME))  }}
-  DIFY_API_IMAGE_NAME: ${{ vars.DIFY_API_IMAGE_NAME || format('{0}/dify-api', secrets.DOCKER_USERNAME))  }}
+  DIFY_WEB_IMAGE_NAME: ${{ vars.DIFY_WEB_IMAGE_NAME || format('{0}/dify-api', secrets.DOCKER_USERNAME)  }}
+  DIFY_API_IMAGE_NAME: ${{ vars.DIFY_API_IMAGE_NAME || format('{0}/dify-api', secrets.DOCKER_USERNAME)  }}
 
 jobs:
   build-and-push:
