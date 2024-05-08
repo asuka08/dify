@@ -26,7 +26,7 @@ from services.workflow_service import WorkflowService
 
 
 class AppService:
-    def get_paginate_apps(self, tenant_id: str, args: dict) -> Pagination | None:
+    def get_paginate_apps(self, tenant_id: str, args: dict, current_user: Account) -> Pagination:
         """
         Get app list with pagination
         :param tenant_id: tenant id
@@ -37,6 +37,9 @@ class AppService:
             App.tenant_id == tenant_id,
             App.is_universal == False
         ]
+
+        if not current_user.real_is_admin_or_owner:
+            filters.append(App.account_id == current_user.id)
 
         if args['mode'] == 'workflow':
             filters.append(App.mode.in_([AppMode.WORKFLOW.value, AppMode.COMPLETION.value]))
@@ -122,6 +125,7 @@ class AppService:
         app.icon = args['icon']
         app.icon_background = args['icon_background']
         app.tenant_id = tenant_id
+        app.account_id = account.id
 
         db.session.add(app)
         db.session.flush()

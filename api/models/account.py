@@ -104,7 +104,13 @@ class Account(UserMixin, db.Model):
     # check current_user.current_tenant.current_role in ['admin', 'owner']
     @property
     def is_admin_or_owner(self):
-        return TenantAccountRole.is_privileged_role(self._current_tenant.current_role)
+        # return self._current_tenant.current_role in ['admin', 'owner']
+        return True
+
+    # check current_user.current_tenant.current_role in ['admin', 'owner']
+    @property
+    def real_is_admin_or_owner(self):
+        return self._current_tenant.current_role in ['admin', 'owner']
 
 
 class TenantStatus(str, enum.Enum):
