@@ -8,6 +8,7 @@ on:
     types:
       - completed
 
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,7 +16,7 @@ jobs:
       github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Deploy to server
-        uses: appleboy/ssh-action@v0.1.8
+        uses: appleboy/ssh-action@master
         with:
           host: 42.193.112.247
           username: syner
