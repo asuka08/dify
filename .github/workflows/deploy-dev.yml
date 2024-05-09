@@ -20,23 +20,22 @@ jobs:
           host: 42.193.112.247
           username: syner
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script:
-        script: | 
-          for i in $(seq 10)
-            do
-              sudo docker compose pull -f /root/dify-test/docker-compose.yaml && \
-              sudo docker compose -f /root/dify-test/docker-compose.yaml up -d && \
-              sudo docker image prune -f
-              update_status=$?
-              if [ $update_status -eq 0 ]
-              then
-                break
-              else
-                echo 'Retry '$i' failed, retrying in 10s...'
-                sleep 10
-              fi
-            done
-          if [ $update_status -ne 0 ]
-          then
-            echo 'Update failed after 10 retries'
-          fi
+          script: | 
+            for i in $(seq 10)
+              do
+                sudo docker compose pull -f /root/dify-test/docker-compose.yaml && \
+                sudo docker compose -f /root/dify-test/docker-compose.yaml up -d && \
+                sudo docker image prune -f
+                update_status=$?
+                if [ $update_status -eq 0 ]
+                then
+                  break
+                else
+                  echo 'Retry '$i' failed, retrying in 10s...'
+                  sleep 10
+                fi
+              done
+            if [ $update_status -ne 0 ]
+            then
+              echo 'Update failed after 10 retries'
+            fi
