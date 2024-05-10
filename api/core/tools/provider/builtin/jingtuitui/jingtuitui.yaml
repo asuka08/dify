@@ -1,0 +1,42 @@
+identity: # 工具供应商的基本信息
+  author: Syngents # 作者
+  name: jingtuitui # 名称，唯一，不允许和其他供应商重名
+  label: # 标签，用于前端展示
+    en_US: JingTuiTui # 英文标签
+    zh_Hans: 京推推 # 中文标签
+  description: # 描述，用于前端展示
+    en_US: JingTuiTui # 英文描述
+    zh_Hans: 京推推 # 中文描述
+  icon: icon.svg # 图标，需要放置在当前模块的_assets文件夹下
+
+credentials_for_provider:
+  appid:
+    type: secret-input
+    required: true
+    label:
+      en_US: JingTuiTui API ID
+      zh_Hans: 京推推 API ID
+      pt_BR: JingTuiTui API ID
+    help:
+      en_US: Please input your JingTuiTui API ID
+      zh_Hans: 请输入你的 京推推 API key
+      pt_BR: Please input your JingTuiTui API ID
+    placeholder:
+      en_US: Please input your JingTuiTui API ID
+      zh_Hans: 请输入你的 京推推 API key
+      pt_BR: Please input your JingTuiTui API ID
+  appkey:
+    type: secret-input
+    required: true
+    label:
+      en_US: JingTuiTui App Key
+      zh_Hans: 京推推 App Key
+      pt_BR: JingTuiTui App Key
+    help:
+      en_US: Please input your JingTuiTui App Key
+      zh_Hans: 请输入你的 京推推 App Key
+      pt_BR: Please input your JingTuiTui App Key
+    placeholder:
+      en_US: Please input your JingTuiTui App Key
+      zh_Hans: 请输入你的 京推推 App key
+      pt_BR: Please input your 京推推 App Key

@@ -1,0 +1,12 @@
+identity: # 工具的基本信息
+  name: topic_and_goods_hot_search # 工具名称，唯一，不允许和其他工具重名
+  author: Syngents # 作者
+  label: # 标签，用于前端展示
+    en_US: topic_and_goods_hot_search # 英文标签
+    zh_Hans: tophub热搜话题&热销商品 # 中文标签
+description: # 描述，用于前端展示
+  human: # 用于前端展示的介绍，支持多语言
+    en_US: A tool for search tophub topic and goods hot search.
+    zh_Hans: 搜索TOPHUB话题热搜话题&热销商品的工具。
+  llm: 分别搜索今日头条、小红书、豆瓣、抖音平台目前的热搜话题和京东、淘宝天猫、拼多多平台上近期热销商品名称和价格，返回热搜话题和热销商品的名称价格信息，当需要搜索热搜话题和热销商品时使用
+  icon: icon.svg
