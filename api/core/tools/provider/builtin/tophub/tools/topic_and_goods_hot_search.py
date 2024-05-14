@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class TopHubTopicAndGoodsHotSearchTool(BuiltinTool):
 
-    def get_hot_info(self, topic, search_maps):
+    def get_hot_info(self, topic, search_maps, num=10):
         result = ""
         baseurl = "https://api.tophubdata.com"
         result += f"{topic}\n"
@@ -22,7 +22,7 @@ class TopHubTopicAndGoodsHotSearchTool(BuiltinTool):
             url = f"{baseurl}{endpoint}"
             r = requests.get(url, headers=headers).json()
             data = []
-            for d in r["data"]["items"][:10]:
+            for d in r["data"]["items"][:num]:
                 data.append(f'\t\t\t\t{d["rank"]}.{d["title"]}')
             data_str = "\n".join(data)
             result += f'\t\t来源:{value}, 数据:\n{data_str}\n'
@@ -50,7 +50,7 @@ class TopHubTopicAndGoodsHotSearchTool(BuiltinTool):
                 "YqoXzV6dOD": "京东·热销总榜"
             }
             result += self.get_hot_info("热搜数据如下:", topic_search_maps)
-            result += self.get_hot_info("热销数据如下:", goods_search_maps)
+            result += self.get_hot_info("热销数据如下:", goods_search_maps, 20)
             return self.create_text_message(result)
         except Exception as e:
             logger.exception("get hot search error")

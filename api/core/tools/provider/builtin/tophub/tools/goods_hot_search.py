@@ -32,7 +32,7 @@ class TopHubGoodsHotSearchTool(BuiltinTool):
                 url = f"{baseurl}{endpoint}"
                 r = requests.get(url, headers=headers).json()
                 data = []
-                for d in r["data"]["items"][:10]:
+                for d in r["data"]["items"][:20]:
                     data.append(f'{d["rank"]}.{d["title"]}')
                 data_str = "\n".join(data)
                 result += f'来源:{value}, 数据:{data_str}\n'
