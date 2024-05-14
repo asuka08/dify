@@ -332,6 +332,7 @@ class CompletionAppStreamResponse(AppStreamResponse):
     """
     CompletionAppStreamResponse entity
     """
+    conversation_id: str
     message_id: str
     created_at: int
 
@@ -382,6 +383,7 @@ class CompletionAppBlockingResponse(AppBlockingResponse):
         """
         id: str
         mode: str
+        conversation_id: str
         message_id: str
         answer: str
         metadata: dict = {}

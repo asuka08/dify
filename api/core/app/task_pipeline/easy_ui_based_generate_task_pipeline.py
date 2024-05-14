@@ -150,6 +150,7 @@ class EasyUIBasedGenerateTaskPipeline(BasedGenerateTaskPipeline, MessageCycleMan
                             id=self._message.id,
                             mode=self._conversation.mode,
                             message_id=self._message.id,
+                            conversation_id=self._conversation.id,
                             answer=self._task_state.llm_result.message.content,
                             created_at=int(self._message.created_at.timestamp()),
                             **extras
@@ -184,6 +185,7 @@ class EasyUIBasedGenerateTaskPipeline(BasedGenerateTaskPipeline, MessageCycleMan
         for stream_response in generator:
             if isinstance(self._application_generate_entity, CompletionAppGenerateEntity):
                 yield CompletionAppStreamResponse(
+                    conversation_id=self._conversation.id,
                     message_id=self._message.id,
                     created_at=int(self._message.created_at.timestamp()),
                     stream_response=stream_response

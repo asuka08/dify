@@ -9,11 +9,12 @@ from core.app.entities.task_entities import (
     ErrorStreamResponse,
     MessageEndStreamResponse,
     PingStreamResponse,
+    CompletionAppBlockingResponse
 )
 
 
 class ChatAppGenerateResponseConverter(AppGenerateResponseConverter):
-    _blocking_response_type = ChatbotAppBlockingResponse
+    _blocking_response_type = (ChatbotAppBlockingResponse, CompletionAppBlockingResponse)
 
     @classmethod
     def convert_blocking_full_response(cls, blocking_response: ChatbotAppBlockingResponse) -> dict:
