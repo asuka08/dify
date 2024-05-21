@@ -29,13 +29,22 @@ class AppGenerateService:
         :return:
         """
         if app_model.mode == AppMode.COMPLETION.value:
-            return CompletionAppGenerator().generate(
-                app_model=app_model,
-                user=user,
-                args=args,
-                invoke_from=invoke_from,
-                stream=streaming
-            )
+            if args.get("conversation_id"):
+                return ChatAppGenerator().generate(
+                    app_model=app_model,
+                    user=user,
+                    args=args,
+                    invoke_from=invoke_from,
+                    stream=streaming
+                )
+            else:
+                return CompletionAppGenerator().generate(
+                    app_model=app_model,
+                    user=user,
+                    args=args,
+                    invoke_from=invoke_from,
+                    stream=streaming
+                )
         elif app_model.mode == AppMode.AGENT_CHAT.value or app_model.is_agent:
             return AgentChatAppGenerator().generate(
                 app_model=app_model,

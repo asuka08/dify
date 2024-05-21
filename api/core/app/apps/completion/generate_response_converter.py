@@ -66,6 +66,7 @@ class CompletionAppGenerateResponseConverter(AppGenerateResponseConverter):
                 continue
 
             response_chunk = {
+                'conversation_id': chunk.conversation_id,
                 'event': sub_stream_response.event.value,
                 'message_id': chunk.message_id,
                 'created_at': chunk.created_at
@@ -95,6 +96,7 @@ class CompletionAppGenerateResponseConverter(AppGenerateResponseConverter):
                 continue
 
             response_chunk = {
+                'conversation_id': chunk.conversation_id,
                 'event': sub_stream_response.event.value,
                 'message_id': chunk.message_id,
                 'created_at': chunk.created_at

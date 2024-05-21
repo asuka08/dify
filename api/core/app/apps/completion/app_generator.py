@@ -55,6 +55,9 @@ class CompletionAppGenerator(MessageBasedAppGenerator):
 
         # get conversation
         conversation = None
+        if args.get('conversation_id'):
+            conversation = self._get_conversation_by_user(app_model, args.get('conversation_id'), user)
+
 
         # get app model config
         app_model_config = self._get_app_model_config(
