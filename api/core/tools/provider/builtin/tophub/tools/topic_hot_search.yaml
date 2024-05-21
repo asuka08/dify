@@ -1,0 +1,12 @@
+identity: # 工具的基本信息
+  name: tophub_topic_hot_search # 工具名称，唯一，不允许和其他工具重名
+  author: Syngents # 作者
+  label: # 标签，用于前端展示
+    en_US: tophub_topic_hot_search # 英文标签
+    zh_Hans: tophub话题热搜 # 中文标签
+description: # 描述，用于前端展示
+  human: # 用于前端展示的介绍，支持多语言
+    en_US: A tool for search tophub topic hot search.
+    zh_Hans: 搜索TOPHUB话题热榜数据的工具。
+  llm: 搜索聚合平台上话题热搜，返回热搜的话题，当需要搜索聚合平台热搜话题时使用。
+  icon: icon.svg

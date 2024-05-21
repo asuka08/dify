@@ -1,0 +1,10 @@
+identity: # 工具供应商的基本信息
+  author: Syngents # 作者
+  name: syngents # 名称，唯一，不允许和其他供应商重名
+  label: # 标签，用于前端展示
+    en_US: syngents # 英文标签
+    zh_Hans: 新智体 # 中文标签
+  description: # 描述，用于前端展示
+    en_US: syngents # 英文描述
+    zh_Hans: 新智体 # 中文描述
+  icon: icon.svg # 图标，需要放置在当前模块的_assets文件夹下

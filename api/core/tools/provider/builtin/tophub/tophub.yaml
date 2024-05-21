@@ -1,0 +1,27 @@
+identity: # 工具供应商的基本信息
+  author: Syngents # 作者
+  name: tophub # 名称，唯一，不允许和其他供应商重名
+  label: # 标签，用于前端展示
+    en_US: tophub # 英文标签
+    zh_Hans: 今日热榜 # 中文标签
+  description: # 描述，用于前端展示
+    en_US: tophub # 英文描述
+    zh_Hans: 今日热榜 # 中文描述
+  icon: icon.svg # 图标，需要放置在当前模块的_assets文件夹下
+
+credentials_for_provider:
+  apikey:
+    type: secret-input
+    required: true
+    label:
+      en_US: TOP HUB API KEY
+      zh_Hans: TOP HUB API KEY
+      pt_BR: TOP HUB API KEY
+    help:
+      en_US: Please input your TOP HUB API ID
+      zh_Hans: 请输入你的 TOP HUB API key
+      pt_BR: Please input your TOP HUB API ID
+    placeholder:
+      en_US: Please input your TOP HUB API ID
+      zh_Hans: 请输入你的 TOP HUB API key
+      pt_BR: Please input your TOP HUB API ID

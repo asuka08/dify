@@ -1,0 +1,25 @@
+identity: # 工具的基本信息
+  name: load_youjia_grade # 工具名称，唯一，不允许和其他工具重名
+  author: Syngents # 作者
+  label: # 标签，用于前端展示
+    en_US: load_youjia_grade # 英文标签
+    zh_Hans: 读取悠家成绩表格 # 中文标签
+description: # 描述，用于前端展示
+  human: # 用于前端展示的介绍，支持多语言
+    en_US: a tool for get youjia grade table
+    zh_Hans: 获取悠家的成绩表格。
+  llm: 获取悠家的成绩表格
+  icon: icon.svg
+parameters:
+  - name: file_url
+    type: string
+    required: true
+    label:
+      en_US: file download url
+      zh_Hans: 要分析的文件链接
+      pt_BR: file download url
+    human_description:
+      en_US: file download url
+      zh_Hans: 要分析的文件链接
+      pt_BR: file download url
+    form: llm
