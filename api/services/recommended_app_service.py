@@ -52,14 +52,12 @@ class RecommendedAppService:
         :return:
         """
         recommended_apps = db.session.query(RecommendedApp).filter(
-            RecommendedApp.is_listed == True,
-            RecommendedApp.language == language
+            RecommendedApp.is_listed == True
         ).all()
 
         if len(recommended_apps) == 0:
             recommended_apps = db.session.query(RecommendedApp).filter(
-                RecommendedApp.is_listed == True,
-                RecommendedApp.language == languages[0]
+                RecommendedApp.is_listed == True
             ).all()
 
         categories = set()
