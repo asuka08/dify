@@ -65,6 +65,33 @@ class AccountService:
 
         return account
 
+    @staticmethod
+    def load_user_by_email(email: str) -> Account:
+        account = Account.query.filter_by(email=email).first()
+        if not account:
+            return None
+
+        if account.status in [AccountStatus.BANNED.value, AccountStatus.CLOSED.value]:
+            raise Unauthorized("Account is banned or closed.")
+
+        current_tenant = TenantAccountJoin.query.filter_by(account_id=account.id, current=True).first()
+        if current_tenant:
+            account.current_tenant_id = current_tenant.tenant_id
+        else:
+            available_ta = TenantAccountJoin.query.filter_by(account_id=account.id) \
+                .order_by(TenantAccountJoin.id.asc()).first()
+            if not available_ta:
+                return None
+
+            account.current_tenant_id = available_ta.tenant_id
+            available_ta.current = True
+            db.session.commit()
+
+        if datetime.now(timezone.utc).replace(tzinfo=None) - account.last_active_at > timedelta(minutes=10):
+            account.last_active_at = datetime.now(timezone.utc).replace(tzinfo=None)
+            db.session.commit()
+
+        return account
 
     @staticmethod
     def get_account_jwt_token(account):
@@ -279,7 +306,8 @@ class TenantService:
         if tenant_id is None:
             raise ValueError("Tenant ID must be provided.")
 
-        tenant_account_join = db.session.query(TenantAccountJoin).join(Tenant, TenantAccountJoin.tenant_id == Tenant.id).filter(
+        tenant_account_join = db.session.query(TenantAccountJoin).join(Tenant,
+                                                                       TenantAccountJoin.tenant_id == Tenant.id).filter(
             TenantAccountJoin.account_id == account.id,
             TenantAccountJoin.tenant_id == tenant_id,
             Tenant.status == TenantStatus.NORMAL,
@@ -288,7 +316,8 @@ class TenantService:
         if not tenant_account_join:
             raise AccountNotLinkTenantError("Tenant not found or account is not a member of the tenant.")
         else:
-            TenantAccountJoin.query.filter(TenantAccountJoin.account_id == account.id, TenantAccountJoin.tenant_id != tenant_id).update({'current': False})
+            TenantAccountJoin.query.filter(TenantAccountJoin.account_id == account.id,
+                                           TenantAccountJoin.tenant_id != tenant_id).update({'current': False})
             tenant_account_join.current = True
             # Set the current tenant for the account
             account.current_tenant_id = tenant_account_join.tenant_id
@@ -339,6 +368,11 @@ class TenantService:
     def get_tenant_count() -> int:
         """Get tenant count"""
         return db.session.query(func.count(Tenant.id)).scalar()
+
+    @staticmethod
+    def get_tenant_by_name(name:str) -> Tenant:
+        """Get tenant count"""
+        return db.session.query(Tenant).filter(Tenant.name == name).first()
 
     @staticmethod
     def check_member_permission(tenant: Tenant, operator: Account, member: Account, action: str) -> None:
@@ -457,7 +491,8 @@ class RegisterService:
         return account
 
     @classmethod
-    def invite_new_member(cls, tenant: Tenant, email: str, language: str, role: str = 'normal', inviter: Account = None) -> str:
+    def invite_new_member(cls, tenant: Tenant, email: str, language: str, role: str = 'normal',
+                          inviter: Account = None) -> str:
         """Invite new member"""
         account = Account.query.filter_by(email=email).first()
 

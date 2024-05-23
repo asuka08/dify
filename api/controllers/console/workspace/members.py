@@ -10,7 +10,7 @@ from extensions.ext_database import db
 from fields.member_fields import account_with_role_list_fields
 from libs.login import login_required
 from models.account import Account, TenantAccountRole
-from services.account_service import RegisterService, TenantService
+from services.account_service import RegisterService, TenantService, AccountService
 from services.errors.account import AccountAlreadyInTenantError
 
 
@@ -24,6 +24,26 @@ class MemberListApi(Resource):
     def get(self):
         members = TenantService.get_tenant_members(current_user.current_tenant)
         return {'result': 'success', 'accounts': members}, 200
+
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, location='json')
+        parser.add_argument('name', type=str, required=True, location='json')
+        parser.add_argument('interface_language', type=str, required=True, location='json')
+        parser.add_argument('password', type=str, required=True, location='json')
+        parser.add_argument('tenant_name', type=str, required=True, location='json')
+        parser.add_argument('role', type=str, required=True, location='json')
+        args = parser.parse_args()
+        account = AccountService.load_user_by_email(args['email'])
+        if not account:
+            account = AccountService.create_account(args['email'], args['name'], args['interface_language'],
+                                                    args['password'])
+            tenant = TenantService.get_tenant_by_name(args['tenant_name'])
+            TenantService.create_tenant_member(tenant, account, args['role'])
+            TenantService.switch_tenant(account, tenant.id)
+        else:
+            return {'result': '已存在用户', 'account': account.dict()}
+        return {'result': 'success', 'account': account.dict()}
 
 
 class MemberInviteEmailApi(Resource):
@@ -51,7 +71,8 @@ class MemberInviteEmailApi(Resource):
         console_web_url = current_app.config.get("CONSOLE_WEB_URL")
         for invitee_email in invitee_emails:
             try:
-                token = RegisterService.invite_new_member(inviter.current_tenant, invitee_email, interface_language, role=invitee_role, inviter=inviter)
+                token = RegisterService.invite_new_member(inviter.current_tenant, invitee_email, interface_language,
+                                                          role=invitee_role, inviter=inviter)
                 invitation_results.append({
                     'status': 'success',
                     'email': invitee_email,
