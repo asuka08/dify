@@ -7,7 +7,6 @@ from werkzeug.exceptions import NotFound, Unauthorized
 
 from constants.languages import supported_language
 from controllers.console import api
-from controllers.console.wraps import only_edition_cloud
 from extensions.ext_database import db
 from models.model import App, InstalledApp, RecommendedApp
 

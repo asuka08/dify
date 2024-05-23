@@ -185,7 +185,8 @@ class AppService:
             icon_background=args.get("icon_background") if args.get("icon_background") \
                 else app_data.get('icon_background'),
             enable_site=True,
-            enable_api=True
+            enable_api=True,
+            account_id=account.id
         )
 
         db.session.add(app)

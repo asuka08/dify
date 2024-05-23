@@ -47,15 +47,12 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
 
   const getNavigations = useCallback((appId: string, isCurrentWorkspaceManager: boolean, mode: string) => {
     const navs = [
-      ...(isCurrentWorkspaceManager
-        ? [{
-          name: t('common.appMenus.promptEng'),
-          href: `/app/${appId}/${(mode === 'workflow' || mode === 'advanced-chat') ? 'workflow' : 'configuration'}`,
-          icon: PromptEngineering,
-          selectedIcon: PromptEngineeringSolid,
-        }]
-        : []
-      ),
+      {
+        name: t('common.appMenus.promptEng'),
+        href: `/app/${appId}/${(mode === 'workflow' || mode === 'advanced-chat') ? 'workflow' : 'configuration'}`,
+        icon: PromptEngineering,
+        selectedIcon: PromptEngineeringSolid,
+      },
       {
         name: t('common.appMenus.apiAccess'),
         href: `/app/${appId}/develop`,

@@ -10,7 +10,7 @@ from extensions.ext_database import db
 from fields.member_fields import account_with_role_list_fields
 from libs.login import login_required
 from models.account import Account, TenantAccountRole
-from services.account_service import RegisterService, TenantService, AccountService
+from services.account_service import AccountService, RegisterService, TenantService
 from services.errors.account import AccountAlreadyInTenantError
 
 
