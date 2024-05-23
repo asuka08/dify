@@ -41,9 +41,10 @@ class MemberListApi(Resource):
             tenant = TenantService.get_tenant_by_name(args['tenant_name'])
             TenantService.create_tenant_member(tenant, account, args['role'])
             TenantService.switch_tenant(account, tenant.id)
+            return {'result': 'success', 'account': account.name}
         else:
-            return {'result': '已存在用户', 'account': account.dict()}
-        return {'result': 'success', 'account': account.dict()}
+            return {'result': '已存在用户', 'account': account.name}
+
 
 
 class MemberInviteEmailApi(Resource):
