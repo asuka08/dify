@@ -156,7 +156,6 @@ class AppService:
             import_data = yaml.safe_load(data)
         except yaml.YAMLError as e:
             raise ValueError("Invalid YAML format in data argument.")
-
         app_data = import_data.get('app')
         model_config_data = import_data.get('model_config')
         workflow = import_data.get('workflow')
@@ -180,7 +179,8 @@ class AppService:
             tenant_id=tenant_id,
             mode=app_data.get('mode'),
             name=args.get("name") if args.get("name") else app_data.get('name'),
-            description=args.get("description") if args.get("description") else app_data.get('description', ''),
+            # description=args.get("description") if args.get("description") else app_data.get('description', ''),
+            description="",
             icon=args.get("icon") if args.get("icon") else app_data.get('icon'),
             icon_background=args.get("icon_background") if args.get("icon_background") \
                 else app_data.get('icon_background'),
