@@ -26,7 +26,8 @@ const navClassName = `
 `
 
 const Header = () => {
-  const { isCurrentWorkspaceManager, langeniusVersionInfo } = useAppContext()
+  // const { isCurrentWorkspaceManager, langeniusVersionInfo } = useAppContext()
+  const isCurrentWorkspaceManager = true
   const [showUpgradePanel, setShowUpgradePanel] = useState(false)
   const upgradeBtnRef = useRef<HTMLElement>(null)
   useClickAway(() => {

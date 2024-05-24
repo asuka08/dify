@@ -44,7 +44,8 @@ const Datasets = ({
   tags,
   keywords,
 }: Props) => {
-  const { isCurrentWorkspaceManager } = useAppContext()
+  // const { isCurrentWorkspaceManager } = useAppContext()
+  const isCurrentWorkspaceManager = true;
   const { data, isLoading, setSize, mutate } = useSWRInfinite(
     (pageIndex: number, previousPageData: DataSetListResponse) => getKey(pageIndex, previousPageData, tags, keywords),
     fetchDatasets,

@@ -37,7 +37,8 @@ export type AppCardProps = {
 const AppCard = ({ app, onRefresh }: AppCardProps) => {
   const { t } = useTranslation()
   const { notify } = useContext(ToastContext)
-  const { isCurrentWorkspaceManager } = useAppContext()
+  // const { isCurrentWorkspaceManager } = useAppContext()
+  const isCurrentWorkspaceManager = true
   const { onPlanInfoChanged } = useProviderContext()
   const { push } = useRouter()
 
