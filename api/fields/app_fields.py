@@ -71,7 +71,7 @@ tag_fields = {
 app_partial_fields = {
     'id': fields.String,
     'name': fields.String,
-    'description': fields.String(attribute='desc_or_prompt'),
+    'description': fields.String,
     'mode': fields.String(attribute='mode_compatible_with_agent'),
     'icon': fields.String,
     'icon_background': fields.String,
