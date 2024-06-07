@@ -28,12 +28,6 @@ const navClassName = `
 const Header = () => {
   // const { isCurrentWorkspaceManager, langeniusVersionInfo } = useAppContext()
   const isCurrentWorkspaceManager = true
-  const [showUpgradePanel, setShowUpgradePanel] = useState(false)
-  const upgradeBtnRef = useRef<HTMLElement>(null)
-  useClickAway(() => {
-    setShowUpgradePanel(false)
-  }, upgradeBtnRef)
-
   const selectedSegment = useSelectedLayoutSegment()
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
