@@ -1,5 +1,5 @@
 export const getRedirection = (
-  isCurrentWorkspaceManager: boolean,
+  isCurrentWorkspaceEditor: boolean,
   app: any,
   redirectionFunc: (href: string) => void,
 ) => {
