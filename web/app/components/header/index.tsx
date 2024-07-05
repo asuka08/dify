@@ -27,8 +27,8 @@ const navClassName = `
 
 const Header = () => {
   // const { isCurrentWorkspaceManager, langeniusVersionInfo } = useAppContext()
-  const isCurrentWorkspaceManager = true
-  const isCurrentWorkspaceDatasetOperator = true
+  const isCurrentWorkspaceEditor = true
+  const isCurrentWorkspaceDatasetOperator = false
   const selectedSegment = useSelectedLayoutSegment()
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile

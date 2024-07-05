@@ -38,7 +38,7 @@ const AppCard = ({ app, onRefresh }: AppCardProps) => {
   const { t } = useTranslation()
   const { notify } = useContext(ToastContext)
   // const { isCurrentWorkspaceManager } = useAppContext()
-  const isCurrentWorkspaceManager = true
+  const isCurrentWorkspaceEditor = true
   const { onPlanInfoChanged } = useProviderContext()
   const { push } = useRouter()
 

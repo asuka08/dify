@@ -188,7 +188,8 @@ const DatasetDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
   const pathname = usePathname()
   const hideSideBar = /documents\/create$/.test(pathname)
   const { t } = useTranslation()
-  const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  // const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const isCurrentWorkspaceDatasetOperator = false
 
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile

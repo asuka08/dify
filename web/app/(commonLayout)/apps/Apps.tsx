@@ -54,8 +54,8 @@ const getKey = (
 const Apps = () => {
   const { t } = useTranslation()
   const router = useRouter()
-  const isCurrentWorkspaceManager = true
-  const isCurrentWorkspaceDatasetOperator = true
+  const isCurrentWorkspaceEditor = true
+  const isCurrentWorkspaceDatasetOperator = false
   const showTagManagementModal = useTagStore(s => s.showTagManagementModal)
   const [activeTab, setActiveTab] = useTabSearchParams({
     defaultTab: 'all',

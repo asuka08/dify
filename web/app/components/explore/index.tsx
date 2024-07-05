@@ -19,7 +19,8 @@ const Explore: FC<IExploreProps> = ({
   const { t } = useTranslation()
   const router = useRouter()
   const [controlUpdateInstalledApps, setControlUpdateInstalledApps] = useState(0)
-  const { userProfile, isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const { userProfile } = useAppContext()
+  const isCurrentWorkspaceDatasetOperator = false
   const [hasEditPermission, setHasEditPermission] = useState(false)
   const [installedApps, setInstalledApps] = useState<InstalledApp[]>([])
 

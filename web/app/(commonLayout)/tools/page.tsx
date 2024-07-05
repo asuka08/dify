@@ -9,7 +9,8 @@ import { useAppContext } from '@/context/app-context'
 const Layout: FC = () => {
   const { t } = useTranslation()
   const router = useRouter()
-  const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  // const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const isCurrentWorkspaceDatasetOperator = false
 
   useEffect(() => {
     document.title = `${t('tools.title')} - Dify`

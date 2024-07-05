@@ -59,7 +59,8 @@ const SettingsModal: FC<SettingsModalProps> = ({
 
   const { setShowAccountSettingModal } = useModalContext()
   const [loading, setLoading] = useState(false)
-  const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  // const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const isCurrentWorkspaceDatasetOperator = false
   const [localeCurrentDataset, setLocaleCurrentDataset] = useState({ ...currentDataset })
   const [selectedMemberIDs, setSelectedMemberIDs] = useState<string[]>(currentDataset.partial_member_list || [])
   const [memberList, setMemberList] = useState<Member[]>([])

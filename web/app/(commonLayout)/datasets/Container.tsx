@@ -60,11 +60,11 @@ const Container = () => {
     setTagFilterValue(value)
     handleTagsUpdate()
   }
-
-  useEffect(() => {
-    if (currentWorkspace.role === 'normal')
-      return router.replace('/apps')
-  }, [currentWorkspace])
+//
+//   useEffect(() => {
+//     if (currentWorkspace.role === 'normal')
+//       return router.replace('/apps')
+//   }, [currentWorkspace])
 
   return (
     <div ref={containerRef} className='grow relative flex flex-col bg-gray-100 overflow-y-auto'>

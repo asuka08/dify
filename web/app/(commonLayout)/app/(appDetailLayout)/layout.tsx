@@ -10,7 +10,8 @@ export type IAppDetail = {
 
 const AppDetail: FC<IAppDetail> = ({ children }) => {
   const router = useRouter()
-  const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  // const { isCurrentWorkspaceDatasetOperator } = useAppContext()
+  const isCurrentWorkspaceDatasetOperator = false
 
   useEffect(() => {
     if (isCurrentWorkspaceDatasetOperator)
