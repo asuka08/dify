@@ -42,7 +42,8 @@ const getKey = (
 const AppNav = () => {
   const { t } = useTranslation()
   const { appId } = useParams()
-  const { isCurrentWorkspaceEditor } = useAppContext()
+  // const { isCurrentWorkspaceEditor } = useAppContext()
+  const isCurrentWorkspaceEditor = true
   const appDetail = useAppStore(state => state.appDetail)
   const [showNewAppDialog, setShowNewAppDialog] = useState(false)
   const [showNewAppTemplateDialog, setShowNewAppTemplateDialog] = useState(false)

@@ -60,7 +60,7 @@ class DatasetService:
         query = Dataset.query.filter(Dataset.provider == provider, Dataset.tenant_id == tenant_id)
 
         if user:
-            if user.current_role == TenantAccountRole.DATASET_OPERATOR:
+            if False:
                 dataset_permission = DatasetPermission.query.filter_by(account_id=user.id).all()
                 if dataset_permission:
                     dataset_ids = [dp.dataset_id for dp in dataset_permission]
@@ -96,11 +96,11 @@ class DatasetService:
             error_out=False
         )
 
-        # check datasets permission,
-        if user and user.current_role != TenantAccountRole.DATASET_OPERATOR:
-            datasets.items, datasets.total = DatasetService.filter_datasets_by_permission(
-                user, datasets
-            )
+        # # check datasets permission,
+        # if user and user.current_role != TenantAccountRole.DATASET_OPERATOR:
+        #     datasets.items, datasets.total = DatasetService.filter_datasets_by_permission(
+        #         user, datasets
+        #     )
 
         return datasets.items, datasets.total
 
@@ -227,7 +227,7 @@ class DatasetService:
                     raise ValueError(ex.description)
         else:
             if data['embedding_model_provider'] != dataset.embedding_model_provider or \
-                data['embedding_model'] != dataset.embedding_model:
+                    data['embedding_model'] != dataset.embedding_model:
                 action = 'update'
                 try:
                     model_manager = ModelManager()
@@ -290,6 +290,7 @@ class DatasetService:
 
     @staticmethod
     def check_dataset_permission(dataset, user):
+        return True
         if dataset.tenant_id != user.current_tenant_id:
             logging.debug(
                 f'User {user.id} does not have permission to access dataset {dataset.id}'
@@ -324,7 +325,7 @@ class DatasetService:
 
         elif dataset.permission == 'partial_members':
             if not any(
-                dp.dataset_id == dataset.id for dp in DatasetPermission.query.filter_by(account_id=user.id).all()
+                    dp.dataset_id == dataset.id for dp in DatasetPermission.query.filter_by(account_id=user.id).all()
             ):
                 raise NoPermissionError('You do not have permission to access this dataset.')
 
@@ -634,9 +635,9 @@ class DocumentService:
 
     @staticmethod
     def save_document_with_dataset_id(
-        dataset: Dataset, document_data: dict,
-        account: Account, dataset_process_rule: Optional[DatasetProcessRule] = None,
-        created_from: str = 'web'
+            dataset: Dataset, document_data: dict,
+            account: Account, dataset_process_rule: Optional[DatasetProcessRule] = None,
+            created_from: str = 'web'
     ):
 
         # check document limit
@@ -667,7 +668,7 @@ class DocumentService:
 
         if not dataset.indexing_technique:
             if 'indexing_technique' not in document_data \
-                or document_data['indexing_technique'] not in Dataset.INDEXING_TECHNIQUE_LIST:
+                    or document_data['indexing_technique'] not in Dataset.INDEXING_TECHNIQUE_LIST:
                 raise ValueError("Indexing technique is required")
 
             dataset.indexing_technique = document_data["indexing_technique"]
@@ -876,10 +877,10 @@ class DocumentService:
 
     @staticmethod
     def build_document(
-        dataset: Dataset, process_rule_id: str, data_source_type: str, document_form: str,
-        document_language: str, data_source_info: dict, created_from: str, position: int,
-        account: Account,
-        name: str, batch: str
+            dataset: Dataset, process_rule_id: str, data_source_type: str, document_form: str,
+            document_language: str, data_source_info: dict, created_from: str, position: int,
+            account: Account,
+            name: str, batch: str
     ):
         document = Document(
             tenant_id=dataset.tenant_id,
@@ -909,9 +910,9 @@ class DocumentService:
 
     @staticmethod
     def update_document_with_dataset_id(
-        dataset: Dataset, document_data: dict,
-        account: Account, dataset_process_rule: Optional[DatasetProcessRule] = None,
-        created_from: str = 'web'
+            dataset: Dataset, document_data: dict,
+            account: Account, dataset_process_rule: Optional[DatasetProcessRule] = None,
+            created_from: str = 'web'
     ):
         DatasetService.check_dataset_model_setting(dataset)
         document = DocumentService.get_document(dataset.id, document_data["original_document_id"])
@@ -1100,7 +1101,7 @@ class DocumentService:
             DocumentService.process_rule_args_validate(args)
         else:
             if ('data_source' not in args and not args['data_source']) \
-                and ('process_rule' not in args and not args['process_rule']):
+                    and ('process_rule' not in args and not args['process_rule']):
                 raise ValueError("Data source or Process rule is required")
             else:
                 if args.get('data_source'):
@@ -1162,7 +1163,7 @@ class DocumentService:
                 raise ValueError("Process rule rules is invalid")
 
             if 'pre_processing_rules' not in args['process_rule']['rules'] \
-                or args['process_rule']['rules']['pre_processing_rules'] is None:
+                    or args['process_rule']['rules']['pre_processing_rules'] is None:
                 raise ValueError("Process rule pre_processing_rules is required")
 
             if not isinstance(args['process_rule']['rules']['pre_processing_rules'], list):
@@ -1187,21 +1188,21 @@ class DocumentService:
             args['process_rule']['rules']['pre_processing_rules'] = list(unique_pre_processing_rule_dicts.values())
 
             if 'segmentation' not in args['process_rule']['rules'] \
-                or args['process_rule']['rules']['segmentation'] is None:
+                    or args['process_rule']['rules']['segmentation'] is None:
                 raise ValueError("Process rule segmentation is required")
 
             if not isinstance(args['process_rule']['rules']['segmentation'], dict):
                 raise ValueError("Process rule segmentation is invalid")
 
             if 'separator' not in args['process_rule']['rules']['segmentation'] \
-                or not args['process_rule']['rules']['segmentation']['separator']:
+                    or not args['process_rule']['rules']['segmentation']['separator']:
                 raise ValueError("Process rule segmentation separator is required")
 
             if not isinstance(args['process_rule']['rules']['segmentation']['separator'], str):
                 raise ValueError("Process rule segmentation separator is invalid")
 
             if 'max_tokens' not in args['process_rule']['rules']['segmentation'] \
-                or not args['process_rule']['rules']['segmentation']['max_tokens']:
+                    or not args['process_rule']['rules']['segmentation']['max_tokens']:
                 raise ValueError("Process rule segmentation max_tokens is required")
 
             if not isinstance(args['process_rule']['rules']['segmentation']['max_tokens'], int):
@@ -1237,7 +1238,7 @@ class DocumentService:
                 raise ValueError("Process rule rules is invalid")
 
             if 'pre_processing_rules' not in args['process_rule']['rules'] \
-                or args['process_rule']['rules']['pre_processing_rules'] is None:
+                    or args['process_rule']['rules']['pre_processing_rules'] is None:
                 raise ValueError("Process rule pre_processing_rules is required")
 
             if not isinstance(args['process_rule']['rules']['pre_processing_rules'], list):
@@ -1262,21 +1263,21 @@ class DocumentService:
             args['process_rule']['rules']['pre_processing_rules'] = list(unique_pre_processing_rule_dicts.values())
 
             if 'segmentation' not in args['process_rule']['rules'] \
-                or args['process_rule']['rules']['segmentation'] is None:
+                    or args['process_rule']['rules']['segmentation'] is None:
                 raise ValueError("Process rule segmentation is required")
 
             if not isinstance(args['process_rule']['rules']['segmentation'], dict):
                 raise ValueError("Process rule segmentation is invalid")
 
             if 'separator' not in args['process_rule']['rules']['segmentation'] \
-                or not args['process_rule']['rules']['segmentation']['separator']:
+                    or not args['process_rule']['rules']['segmentation']['separator']:
                 raise ValueError("Process rule segmentation separator is required")
 
             if not isinstance(args['process_rule']['rules']['segmentation']['separator'], str):
                 raise ValueError("Process rule segmentation separator is invalid")
 
             if 'max_tokens' not in args['process_rule']['rules']['segmentation'] \
-                or not args['process_rule']['rules']['segmentation']['max_tokens']:
+                    or not args['process_rule']['rules']['segmentation']['max_tokens']:
                 raise ValueError("Process rule segmentation max_tokens is required")
 
             if not isinstance(args['process_rule']['rules']['segmentation']['max_tokens'], int):
@@ -1531,8 +1532,8 @@ class SegmentService:
 class DatasetCollectionBindingService:
     @classmethod
     def get_dataset_collection_binding(
-        cls, provider_name: str, model_name: str,
-        collection_type: str = 'dataset'
+            cls, provider_name: str, model_name: str,
+            collection_type: str = 'dataset'
     ) -> DatasetCollectionBinding:
         dataset_collection_binding = db.session.query(DatasetCollectionBinding). \
             filter(
@@ -1556,8 +1557,8 @@ class DatasetCollectionBindingService:
 
     @classmethod
     def get_dataset_collection_binding_by_id_and_type(
-        cls, collection_binding_id: str,
-        collection_type: str = 'dataset'
+            cls, collection_binding_id: str,
+            collection_type: str = 'dataset'
     ) -> DatasetCollectionBinding:
         dataset_collection_binding = db.session.query(DatasetCollectionBinding). \
             filter(

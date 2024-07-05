@@ -160,8 +160,10 @@ class TenantAccountRole(str, enum.Enum):
 
     @staticmethod
     def is_dataset_edit_role(role: str) -> bool:
-        return role and role in {TenantAccountRole.OWNER, TenantAccountRole.ADMIN, TenantAccountRole.EDITOR,
-                                 TenantAccountRole.DATASET_OPERATOR}
+        # return role and role in {TenantAccountRole.OWNER, TenantAccountRole.ADMIN, TenantAccountRole.EDITOR,
+        #                          TenantAccountRole.DATASET_OPERATOR}
+        # 后面看需求再控制知识库权限
+        return True
 
 class Tenant(db.Model):
     __tablename__ = 'tenants'

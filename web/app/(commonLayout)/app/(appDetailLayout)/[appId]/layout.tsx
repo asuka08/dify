@@ -40,7 +40,8 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
   const pathname = usePathname()
   const media = useBreakpoints()
   const isMobile = media === MediaType.mobile
-  const { isCurrentWorkspaceManager, isCurrentWorkspaceEditor } = useAppContext()
+  const { isCurrentWorkspaceManager } = useAppContext()
+  const isCurrentWorkspaceEditor = true
   const { appDetail, setAppDetail, setAppSiderbarExpand } = useStore(useShallow(state => ({
     appDetail: state.appDetail,
     setAppDetail: state.setAppDetail,
@@ -58,8 +59,8 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
       {
         name: t('common.appMenus.promptEng'),
         href: `/app/${appId}/${(mode === 'workflow' || mode === 'advanced-chat') ? 'workflow' : 'configuration'}`,
-        icon: PromptEngineering,
-        selectedIcon: PromptEngineeringSolid,
+        icon: RiTerminalWindowLine,
+        selectedIcon: RiTerminalWindowFill,
       },
       {
         name: t('common.appMenus.apiAccess'),
@@ -67,17 +68,14 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
         icon: RiTerminalBoxLine,
         selectedIcon: RiTerminalBoxFill,
       },
-      ...(isCurrentWorkspaceManager
-        ? [{
-          name: mode !== 'workflow'
-            ? t('common.appMenus.logAndAnn')
-            : t('common.appMenus.logs'),
-          href: `/app/${appId}/logs`,
-          icon: RiFileList3Line,
-          selectedIcon: RiFileList3Fill,
-        }]
-        : []
-      ),
+      {
+        name: mode !== 'workflow'
+          ? t('common.appMenus.logAndAnn')
+          : t('common.appMenus.logs'),
+        href: `/app/${appId}/logs`,
+        icon: RiFileList3Line,
+        selectedIcon: RiFileList3Fill,
+      },
       {
         name: t('common.appMenus.overview'),
         href: `/app/${appId}/overview`,
