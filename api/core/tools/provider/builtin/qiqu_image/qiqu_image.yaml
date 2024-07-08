@@ -1,0 +1,27 @@
+identity: # 工具供应商的基本信息
+  author: Syngents # 作者
+  name: qiqu_image # 名称，唯一，不允许和其他供应商重名
+  label: # 标签，用于前端展示
+    en_US: qiqu_image # 英文标签
+    zh_Hans: 奇趣图片 # 中文标签
+  description: # 描述，用于前端展示
+    en_US: qiqu_image # 英文描述
+    zh_Hans: 奇趣图片 # 中文描述
+  icon: icon.svg # 图标，需要放置在当前模块的_assets文件夹下
+
+credentials_for_provider:
+  apikey:
+    type: secret-input
+    required: true
+    label:
+      en_US: QIQU IMAGE API KEY
+      zh_Hans: QIQU IMAGE API KEY
+      pt_BR: QIQU IMAGE API KEYnsl
+    help:
+      en_US: Please input your QIQU IMAGE API ID
+      zh_Hans: 请输入你的 QIQU IMAGE  API key
+      pt_BR: Please input yourQIQU IMAGE API ID
+    placeholder:
+      en_US: Please input your QIQU IMAGE API ID
+      zh_Hans: 请输入你的 TOP QIQU IMAGE key
+      pt_BR: Please input your QIQU IMAGE API ID

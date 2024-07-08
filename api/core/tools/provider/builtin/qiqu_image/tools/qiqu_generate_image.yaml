@@ -1,0 +1,55 @@
+identity: # 工具的基本信息
+  name: generate_qiqu_image # 工具名称，唯一，不允许和其他工具重名
+  author: Syngents # 作者
+  label: # 标签，用于前端展示
+    en_US: generate_qiqu_image # 英文标签
+    zh_Hans: 生成奇趣图片 # 中文标签
+description: # 描述，用于前端展示
+  human: # 用于前端展示的介绍，支持多语言
+    en_US: A tool to gen qiqu image.
+    zh_Hans: 生成奇趣图片。
+  llm: 生成奇趣图片。
+  icon: icon.svg
+parameters:
+  - name: prompt
+    type: string
+    required: true
+    label:
+      en_US: prompt
+      zh_Hans: 图片描述词
+      pt_BR: prompt
+    human_description:
+      en_US: prompt
+      zh_Hans: 图片描述词
+      pt_BR: prompt
+    llm_description: prompt
+    form: llm
+  - name: width
+    type: number
+    required: false
+    default: 300
+    label:
+      en_US: width
+      zh_Hans: 高度
+      pt_BR: width
+    human_description:
+      en_US: width
+      zh_Hans: 高度
+      pt_BR: width
+    llm_description: width
+    form: llm
+  - name: height
+    type: number
+    required: false
+    default: 300
+    label:
+      en_US: height
+      zh_Hans: 高度
+      pt_BR: height
+    human_description:
+      en_US: height
+      zh_Hans: 高度
+      pt_BR: height
+    llm_description: height
+    form: llm
+
