@@ -1,11 +1,10 @@
+import logging
 from typing import Any, Union
 
-import httpx
-import logging
+import requests
+
 from core.tools.entities.tool_entities import ToolInvokeMessage
 from core.tools.tool.builtin_tool import BuiltinTool
-from core.tools.utils.uuid_utils import is_valid_uuid
-import requests
 
 logger = logging.getLogger(__name__)
 

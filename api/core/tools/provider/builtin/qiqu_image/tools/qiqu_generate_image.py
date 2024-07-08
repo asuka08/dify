@@ -1,11 +1,10 @@
+import logging
 from typing import Any, Union
 
-import httpx
-import logging
+import requests
+
 from core.tools.entities.tool_entities import ToolInvokeMessage
 from core.tools.tool.builtin_tool import BuiltinTool
-from core.tools.utils.uuid_utils import is_valid_uuid
-import requests
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,7 @@ class QIQUGenerateImageTool(BuiltinTool):
 
         try:
             headers = {'Authorization': "Bearer " + self.runtime.credentials["apikey"]}
-            endpoint = f"/openapi/v1/qiqu/images/generate/"
+            endpoint = "/openapi/v1/qiqu/images/generate/"
             url = f"{baseurl}{endpoint}"
             r = requests.post(url, headers=headers, json={
                 "prompt": tool_parameters["prompt"],
