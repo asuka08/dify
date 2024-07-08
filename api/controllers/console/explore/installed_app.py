@@ -21,7 +21,7 @@ class InstalledAppsListApi(Resource):
     @marshal_with(installed_app_list_fields)
     def get(self):
         current_tenant_id = current_user.current_tenant_id
-        installed_apps = db.session.query(InstalledApp).filter(
+        installed_apps = db.session.query(InstalledApp).join(App, InstalledApp.app_id == App.id).filter(
             InstalledApp.tenant_id == current_tenant_id
         ).all()
 
@@ -36,11 +36,13 @@ class InstalledAppsListApi(Resource):
                 'editable': current_user.role in ["owner", "admin"],
                 'uninstallable': current_tenant_id == installed_app.app_owner_tenant_id
             }
-            for installed_app in installed_apps
+            for installed_app in installed_apps if
+            (installed_app.app.account_id == current_user.id or current_user.real_is_admin_or_owner)
         ]
         installed_apps.sort(key=lambda app: (-app['is_pinned'],
                                              app['last_used_at'] is None,
-                                             -app['last_used_at'].timestamp() if app['last_used_at'] is not None else 0))
+                                             -app['last_used_at'].timestamp() if app[
+                                                                                     'last_used_at'] is not None else 0))
 
         return {'installed_apps': installed_apps}
 
@@ -94,6 +96,7 @@ class InstalledAppApi(InstalledAppResource):
     update and delete an installed app
     use InstalledAppResource to apply default decorators and get installed_app
     """
+
     def delete(self, installed_app):
         if installed_app.app_owner_tenant_id == current_user.current_tenant_id:
             raise BadRequest('You can\'t uninstall an app owned by the current tenant')

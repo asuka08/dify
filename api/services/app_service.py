@@ -16,13 +16,14 @@ from core.model_runtime.entities.model_entities import ModelPropertyKey, ModelTy
 from core.model_runtime.model_providers.__base.large_language_model import LargeLanguageModel
 from core.tools.tool_manager import ToolManager
 from core.tools.utils.configuration import ToolParameterConfigurationManager
-from events.app_event import app_model_config_was_updated, app_was_created, app_was_deleted
+from events.app_event import app_model_config_was_updated, app_was_created
 from extensions.ext_database import db
 from models.account import Account
 from models.model import App, AppMode, AppModelConfig
 from models.tools import ApiToolProvider
 from services.tag_service import TagService
 from services.workflow_service import WorkflowService
+from tasks.remove_app_and_related_data_task import remove_app_and_related_data_task
 
 
 class AppService:
@@ -50,10 +51,10 @@ class AppService:
         elif args['mode'] == 'channel':
             filters.append(App.mode == AppMode.CHANNEL.value)
 
-        if 'name' in args and args['name']:
+        if args.get('name'):
             name = args['name'][:30]
             filters.append(App.name.ilike(f'%{name}%'))
-        if 'tag_ids' in args and args['tag_ids']:
+        if args.get('tag_ids'):
             target_ids = TagService.get_target_ids_by_tag_ids('app',
                                                               tenant_id,
                                                               args['tag_ids'])
@@ -156,7 +157,6 @@ class AppService:
             import_data = yaml.safe_load(data)
         except yaml.YAMLError as e:
             raise ValueError("Invalid YAML format in data argument.")
-
         app_data = import_data.get('app')
         model_config_data = import_data.get('model_config')
         workflow = import_data.get('workflow')
@@ -180,12 +180,14 @@ class AppService:
             tenant_id=tenant_id,
             mode=app_data.get('mode'),
             name=args.get("name") if args.get("name") else app_data.get('name'),
-            description=args.get("description") if args.get("description") else app_data.get('description', ''),
+            # description=args.get("description") if args.get("description") else app_data.get('description', ''),
+            description="",
             icon=args.get("icon") if args.get("icon") else app_data.get('icon'),
             icon_background=args.get("icon_background") if args.get("icon_background") \
                 else app_data.get('icon_background'),
             enable_site=True,
-            enable_api=True
+            enable_api=True,
+            account_id=account.id
         )
 
         db.session.add(app)
@@ -399,16 +401,8 @@ class AppService:
         """
         db.session.delete(app)
         db.session.commit()
-
-        app_was_deleted.send(app)
-
-        # todo async delete related data by event
-        # app_model_configs, site, api_tokens, installed_apps, recommended_apps BY app
-        # app_annotation_hit_histories, app_annotation_settings, app_dataset_joins BY app
-        # workflows, workflow_runs, workflow_node_executions, workflow_app_logs BY app
-        # conversations, pinned_conversations, messages BY app
-        # message_feedbacks, message_annotations, message_chains BY message
-        # message_agent_thoughts, message_files, saved_messages BY message
+        # Trigger asynchronous deletion of app and related data
+        remove_app_and_related_data_task.delay(app.id)
 
     def get_app_meta(self, app_model: App) -> dict:
         """

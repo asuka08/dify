@@ -59,10 +59,10 @@ const AppCard = ({
         </div>
       </div>
       <div className='mb-1 px-[14px] text-xs leading-normal text-gray-500 line-clamp-4 group-hover:line-clamp-2 group-hover:h-9'>{app.description}</div>
-      {isExplore && canCreate && (
+      {isExplore && (
         <div className={cn('hidden items-center flex-wrap min-h-[42px] px-[14px] pt-2 pb-[10px] group-hover:flex')}>
           <div className={cn('flex items-center w-full space-x-2')}>
-            <Button type='primary' className='grow flex items-center !h-7' onClick={() => onCreate()}>
+            <Button variant='primary' className='grow h-7' onClick={() => onCreate()}>
               <PlusIcon className='w-4 h-4 mr-1' />
               <span className='text-xs'>{t('explore.appCard.addToWorkspace')}</span>
             </Button>
@@ -72,7 +72,7 @@ const AppCard = ({
       {!isExplore && (
         <div className={cn('hidden items-center flex-wrap min-h-[42px] px-[14px] pt-2 pb-[10px] group-hover:flex')}>
           <div className={cn('flex items-center w-full space-x-2')}>
-            <Button type='primary' className='grow flex items-center !h-7' onClick={() => onCreate()}>
+            <Button variant='primary' className='grow h-7' onClick={() => onCreate()}>
               <PlusIcon className='w-4 h-4 mr-1' />
               <span className='text-xs'>{t('app.newApp.useTemplate')}</span>
             </Button>

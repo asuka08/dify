@@ -10,7 +10,7 @@ from extensions.ext_database import db
 from fields.member_fields import account_with_role_list_fields
 from libs.login import login_required
 from models.account import Account, TenantAccountRole
-from services.account_service import RegisterService, TenantService
+from services.account_service import AccountService, RegisterService, TenantService
 from services.errors.account import AccountAlreadyInTenantError
 
 
@@ -24,6 +24,27 @@ class MemberListApi(Resource):
     def get(self):
         members = TenantService.get_tenant_members(current_user.current_tenant)
         return {'result': 'success', 'accounts': members}, 200
+
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('email', type=str, required=True, location='json')
+        parser.add_argument('name', type=str, required=True, location='json')
+        parser.add_argument('interface_language', type=str, required=True, location='json')
+        parser.add_argument('password', type=str, required=True, location='json')
+        parser.add_argument('tenant_name', type=str, required=True, location='json')
+        parser.add_argument('role', type=str, required=True, location='json')
+        args = parser.parse_args()
+        account = AccountService.load_user_by_email(args['email'])
+        if not account:
+            account = AccountService.create_account(args['email'], args['name'], args['interface_language'],
+                                                    args['password'])
+            tenant = TenantService.get_tenant_by_name(args['tenant_name'])
+            TenantService.create_tenant_member(tenant, account, args['role'])
+            TenantService.switch_tenant(account, tenant.id)
+            return {'result': 'success', 'account': account.name}
+        else:
+            return {'result': '已存在用户', 'account': account.name}
+
 
 
 class MemberInviteEmailApi(Resource):
@@ -43,7 +64,7 @@ class MemberInviteEmailApi(Resource):
         invitee_emails = args['emails']
         invitee_role = args['role']
         interface_language = args['language']
-        if invitee_role not in [TenantAccountRole.ADMIN, TenantAccountRole.NORMAL]:
+        if not TenantAccountRole.is_non_owner_role(invitee_role):
             return {'code': 'invalid-role', 'message': 'Invalid role'}, 400
 
         inviter = current_user
@@ -51,7 +72,8 @@ class MemberInviteEmailApi(Resource):
         console_web_url = current_app.config.get("CONSOLE_WEB_URL")
         for invitee_email in invitee_emails:
             try:
-                token = RegisterService.invite_new_member(inviter.current_tenant, invitee_email, interface_language, role=invitee_role, inviter=inviter)
+                token = RegisterService.invite_new_member(inviter.current_tenant, invitee_email, interface_language,
+                                                          role=invitee_role, inviter=inviter)
                 invitation_results.append({
                     'status': 'success',
                     'email': invitee_email,
@@ -114,7 +136,7 @@ class MemberUpdateRoleApi(Resource):
         args = parser.parse_args()
         new_role = args['role']
 
-        if new_role not in ['admin', 'normal', 'owner']:
+        if not TenantAccountRole.is_valid_role(new_role):
             return {'code': 'invalid-role', 'message': 'Invalid role'}, 400
 
         member = Account.query.get(str(member_id))
@@ -131,7 +153,20 @@ class MemberUpdateRoleApi(Resource):
         return {'result': 'success'}
 
 
+class DatasetOperatorMemberListApi(Resource):
+    """List all members of current tenant."""
+
+    @setup_required
+    @login_required
+    @account_initialization_required
+    @marshal_with(account_with_role_list_fields)
+    def get(self):
+        members = TenantService.get_dataset_operator_members(current_user.current_tenant)
+        return {'result': 'success', 'accounts': members}, 200
+
+
 api.add_resource(MemberListApi, '/workspaces/current/members')
 api.add_resource(MemberInviteEmailApi, '/workspaces/current/members/invite-email')
 api.add_resource(MemberCancelInviteApi, '/workspaces/current/members/<uuid:member_id>')
 api.add_resource(MemberUpdateRoleApi, '/workspaces/current/members/<uuid:member_id>/update-role')
+api.add_resource(DatasetOperatorMemberListApi, '/workspaces/current/dataset-operators')

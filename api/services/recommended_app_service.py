@@ -52,14 +52,12 @@ class RecommendedAppService:
         :return:
         """
         recommended_apps = db.session.query(RecommendedApp).filter(
-            RecommendedApp.is_listed == True,
-            RecommendedApp.language == language
+            RecommendedApp.is_listed == True
         ).all()
 
         if len(recommended_apps) == 0:
             recommended_apps = db.session.query(RecommendedApp).filter(
-                RecommendedApp.is_listed == True,
-                RecommendedApp.language == languages[0]
+                RecommendedApp.is_listed == True
             ).all()
 
         categories = set()
@@ -86,6 +84,7 @@ class RecommendedAppService:
                 'description': site.description,
                 'copyright': site.copyright,
                 'privacy_policy': site.privacy_policy,
+                'custom_disclaimer': site.custom_disclaimer,
                 'category': recommended_app.category,
                 'position': recommended_app.position,
                 'is_listed': recommended_app.is_listed
@@ -94,7 +93,7 @@ class RecommendedAppService:
 
             categories.add(recommended_app.category)  # add category to categories
 
-        return {'recommended_apps': recommended_apps_result, 'categories': list(categories)}
+        return {'recommended_apps': recommended_apps_result, 'categories': sorted(categories)}
 
     @classmethod
     def _fetch_recommended_apps_from_dify_official(cls, language: str) -> dict:

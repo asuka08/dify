@@ -6,10 +6,10 @@ from core.app.apps.base_app_generate_response_converter import AppGenerateRespon
 from core.app.entities.task_entities import (
     ChatbotAppBlockingResponse,
     ChatbotAppStreamResponse,
+    CompletionAppBlockingResponse,
     ErrorStreamResponse,
     MessageEndStreamResponse,
     PingStreamResponse,
-    CompletionAppBlockingResponse
 )
 
 
