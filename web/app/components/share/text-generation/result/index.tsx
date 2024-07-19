@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useBoolean } from 'ahooks'
 import { t } from 'i18next'
 import produce from 'immer'
-import cn from 'classnames'
+import cn from '@/utils/classnames'
 import TextGenerationRes from '@/app/components/app/text-generate/item'
 import NoData from '@/app/components/share/text-generation/no-data'
 import Toast from '@/app/components/base/toast'
@@ -19,6 +19,7 @@ import { NodeRunningStatus, WorkflowRunningStatus } from '@/app/components/workf
 import type { WorkflowProcess } from '@/app/components/base/chat/types'
 import { sleep } from '@/utils'
 import type { SiteInfo } from '@/models/share'
+import { TEXT_GENERATION_TIMEOUT_MS } from '@/config'
 
 export type IResultProps = {
   isWorkflow: boolean

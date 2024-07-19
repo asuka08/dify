@@ -115,7 +115,7 @@ class DatasetListApi(Resource):
         args = parser.parse_args()
 
         # The role of the current user in the ta table must be admin, owner, or editor, or dataset_operator
-        if not current_user.is_editor:
+        if not current_user.is_dataset_editor:
             raise Forbidden()
 
         try:
@@ -226,9 +226,12 @@ class DatasetApi(Resource):
             raise NotFound("Dataset not found.")
 
         result_data = marshal(dataset, dataset_detail_fields)
+        tenant_id = current_user.current_tenant_id
 
         if data.get('partial_member_list') and data.get('permission') == 'partial_members':
-            DatasetPermissionService.update_partial_member_list(dataset_id_str, data.get('partial_member_list'))
+            DatasetPermissionService.update_partial_member_list(
+                tenant_id, dataset_id_str, data.get('partial_member_list')
+            )
         else:
             DatasetPermissionService.clear_partial_member_list(dataset_id_str)
 
@@ -249,6 +252,7 @@ class DatasetApi(Resource):
 
         try:
             if DatasetService.delete_dataset(dataset_id_str, current_user):
+                DatasetPermissionService.clear_partial_member_list(dataset_id_str)
                 return {'result': 'success'}, 204
             else:
                 raise NotFound("Dataset not found.")
@@ -541,15 +545,15 @@ class DatasetRetrievalSettingApi(Resource):
             case VectorType.MILVUS | VectorType.RELYT | VectorType.PGVECTOR | VectorType.TIDB_VECTOR | VectorType.CHROMA | VectorType.TENCENT | VectorType.ORACLE:
                 return {
                     'retrieval_method': [
-                        RetrievalMethod.SEMANTIC_SEARCH
+                        RetrievalMethod.SEMANTIC_SEARCH.value
                     ]
                 }
-            case VectorType.QDRANT | VectorType.WEAVIATE | VectorType.OPENSEARCH:
+            case VectorType.QDRANT | VectorType.WEAVIATE | VectorType.OPENSEARCH | VectorType.ANALYTICDB | VectorType.MYSCALE:
                 return {
                     'retrieval_method': [
-                        RetrievalMethod.SEMANTIC_SEARCH,
-                        RetrievalMethod.FULL_TEXT_SEARCH,
-                        RetrievalMethod.HYBRID_SEARCH,
+                        RetrievalMethod.SEMANTIC_SEARCH.value,
+                        RetrievalMethod.FULL_TEXT_SEARCH.value,
+                        RetrievalMethod.HYBRID_SEARCH.value,
                     ]
                 }
             case _:
@@ -565,15 +569,15 @@ class DatasetRetrievalSettingMockApi(Resource):
             case VectorType.MILVUS | VectorType.RELYT | VectorType.PGVECTOR | VectorType.TIDB_VECTOR | VectorType.CHROMA | VectorType.TENCENT | VectorType.ORACLE:
                 return {
                     'retrieval_method': [
-                        RetrievalMethod.SEMANTIC_SEARCH
+                        RetrievalMethod.SEMANTIC_SEARCH.value
                     ]
                 }
-            case VectorType.QDRANT | VectorType.WEAVIATE | VectorType.OPENSEARCH:
+            case VectorType.QDRANT | VectorType.WEAVIATE | VectorType.OPENSEARCH| VectorType.ANALYTICDB | VectorType.MYSCALE:
                 return {
                     'retrieval_method': [
-                        RetrievalMethod.SEMANTIC_SEARCH,
-                        RetrievalMethod.FULL_TEXT_SEARCH,
-                        RetrievalMethod.HYBRID_SEARCH,
+                        RetrievalMethod.SEMANTIC_SEARCH.value,
+                        RetrievalMethod.FULL_TEXT_SEARCH.value,
+                        RetrievalMethod.HYBRID_SEARCH.value,
                     ]
                 }
             case _:

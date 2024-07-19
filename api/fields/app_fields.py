@@ -73,6 +73,7 @@ app_partial_fields = {
     'id': fields.String,
     'name': fields.String,
     'description': fields.String,
+    'max_active_requests': fields.Raw(),
     'mode': fields.String(attribute='mode_compatible_with_agent'),
     'icon': fields.String,
     'icon_background': fields.String,
