@@ -260,7 +260,7 @@ const SettingsModal: FC<SettingsModalProps> = ({
 
         {/* Retrieval Method Config */}
         <div className={rowClass}>
-          <div className={labelClass}>
+          <div className={cn(labelClass, 'w-auto min-w-[168px]')}>
             <div>
               <div>{t('datasetSettings.form.retrievalSetting.title')}</div>
               <div className='leading-[18px] text-xs font-normal text-gray-500'>
@@ -269,7 +269,7 @@ const SettingsModal: FC<SettingsModalProps> = ({
               </div>
             </div>
           </div>
-          <div className='w-[480px]'>
+          <div>
             {indexMethod === 'high_quality'
               ? (
                 <RetrievalMethodConfig

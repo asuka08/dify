@@ -114,6 +114,10 @@ const Form = () => {
       retrievalConfig,
       indexMethod,
     })
+    if (postRetrievalConfig.weights) {
+      postRetrievalConfig.weights.vector_setting.embedding_provider_name = currentDataset?.embedding_model_provider || ''
+      postRetrievalConfig.weights.vector_setting.embedding_model_name = currentDataset?.embedding_model || ''
+    }
     try {
       setLoading(true)
       const requestParams = {
@@ -261,20 +265,18 @@ const Form = () => {
             )}
         </div>
       </div>
-      {currentDataset?.embedding_available && (
-        <div className={rowClass}>
-          <div className={labelClass} />
-          <div className='w-[480px]'>
-            <Button
-              className='min-w-24'
-              variant='primary'
-              onClick={handleSave}
-            >
-              {t('datasetSettings.form.save')}
-            </Button>
-          </div>
+      <div className={rowClass}>
+        <div className={labelClass} />
+        <div className='w-[480px]'>
+          <Button
+            className='min-w-24'
+            variant='primary'
+            onClick={handleSave}
+          >
+            {t('datasetSettings.form.save')}
+          </Button>
         </div>
-      )}
+      </div>
     </div>
   )
 }

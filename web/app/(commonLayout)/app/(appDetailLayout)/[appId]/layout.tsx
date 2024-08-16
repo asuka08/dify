@@ -54,7 +54,7 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
     selectedIcon: NavIcon
   }>>([])
 
-  const getNavigations = useCallback((appId: string, isCurrentWorkspaceManager: boolean, isCurrentWorkspaceEditor: boolean, mode: string) => {
+  const getNavigations = useCallback((appId: string, isCurrentWorkspaceEditor: boolean, mode: string) => {
     const navs = [
       {
         name: t('common.appMenus.promptEng'),
@@ -110,13 +110,13 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
       }
       else {
         setAppDetail(res)
-        setNavigation(getNavigations(appId, isCurrentWorkspaceManager, isCurrentWorkspaceEditor, res.mode))
+        setNavigation(getNavigations(appId, isCurrentWorkspaceEditor, res.mode))
       }
     }).catch((e: any) => {
       if (e.status === 404)
         router.replace('/apps')
     })
-  }, [appId, isCurrentWorkspaceManager, isCurrentWorkspaceEditor])
+  }, [appId, isCurrentWorkspaceEditor])
 
   useUnmount(() => {
     setAppDetail()
