@@ -1,6 +1,9 @@
 from collections.abc import Generator
 from typing import Any, Union
 
+from openai._exceptions import RateLimitError
+
+from configs import dify_config
 from core.app.apps.advanced_chat.app_generator import AdvancedChatAppGenerator
 from core.app.apps.agent_chat.app_generator import AgentChatAppGenerator
 from core.app.apps.chat.app_generator import ChatAppGenerator
@@ -8,18 +11,21 @@ from core.app.apps.completion.app_generator import CompletionAppGenerator
 from core.app.apps.workflow.app_generator import WorkflowAppGenerator
 from core.app.entities.app_invoke_entities import InvokeFrom
 from models.model import Account, App, AppMode, EndUser
+from models.workflow import Workflow
+from services.errors.llm import InvokeRateLimitError
 from services.workflow_service import WorkflowService
 
 
 class AppGenerateService:
-
     @classmethod
-    def generate(cls, app_model: App,
-                 user: Union[Account, EndUser],
-                 args: Any,
-                 invoke_from: InvokeFrom,
-                 streaming: bool = True,
-                 ):
+    def generate(
+        cls,
+        app_model: App,
+        user: Union[Account, EndUser],
+        args: Any,
+        invoke_from: InvokeFrom,
+        streaming: bool = True,
+    ):
         """
         App Content Generate
         :param app_model: app model
@@ -86,38 +92,29 @@ class AppGenerateService:
             raise ValueError(f'Invalid app mode {app_model.mode}')
 
     @classmethod
-    def generate_single_iteration(cls, app_model: App,
-                                  user: Union[Account, EndUser],
-                                  node_id: str,
-                                  args: Any,
-                                  streaming: bool = True):
+    def generate_single_iteration(cls, app_model: App, user: Account, node_id: str, args: Any, streaming: bool = True):
         if app_model.mode == AppMode.ADVANCED_CHAT.value:
             workflow = cls._get_workflow(app_model, InvokeFrom.DEBUGGER)
             return AdvancedChatAppGenerator().single_iteration_generate(
-                app_model=app_model,
-                workflow=workflow,
-                node_id=node_id,
-                user=user,
-                args=args,
-                stream=streaming
+                app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, stream=streaming
             )
         elif app_model.mode == AppMode.WORKFLOW.value:
             workflow = cls._get_workflow(app_model, InvokeFrom.DEBUGGER)
             return WorkflowAppGenerator().single_iteration_generate(
-                app_model=app_model,
-                workflow=workflow,
-                node_id=node_id,
-                user=user,
-                args=args,
-                stream=streaming
+                app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, stream=streaming
             )
         else:
-            raise ValueError(f'Invalid app mode {app_model.mode}')
+            raise ValueError(f"Invalid app mode {app_model.mode}")
 
     @classmethod
-    def generate_more_like_this(cls, app_model: App, user: Union[Account, EndUser],
-                                message_id: str, invoke_from: InvokeFrom, streaming: bool = True) \
-            -> Union[dict, Generator]:
+    def generate_more_like_this(
+        cls,
+        app_model: App,
+        user: Union[Account, EndUser],
+        message_id: str,
+        invoke_from: InvokeFrom,
+        streaming: bool = True,
+    ) -> Union[dict, Generator]:
         """
         Generate more like this
         :param app_model: app model
@@ -128,15 +125,11 @@ class AppGenerateService:
         :return:
         """
         return CompletionAppGenerator().generate_more_like_this(
-            app_model=app_model,
-            message_id=message_id,
-            user=user,
-            invoke_from=invoke_from,
-            stream=streaming
+            app_model=app_model, message_id=message_id, user=user, invoke_from=invoke_from, stream=streaming
         )
 
     @classmethod
-    def _get_workflow(cls, app_model: App, invoke_from: InvokeFrom) -> Any:
+    def _get_workflow(cls, app_model: App, invoke_from: InvokeFrom) -> Workflow:
         """
         Get workflow
         :param app_model: app model
@@ -149,12 +142,12 @@ class AppGenerateService:
             workflow = workflow_service.get_draft_workflow(app_model=app_model)
 
             if not workflow:
-                raise ValueError('Workflow not initialized')
+                raise ValueError("Workflow not initialized")
         else:
             # fetch published workflow by app_model
             workflow = workflow_service.get_published_workflow(app_model=app_model)
 
             if not workflow:
-                raise ValueError('Workflow not published')
+                raise ValueError("Workflow not published")
 
         return workflow
