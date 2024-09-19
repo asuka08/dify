@@ -10,7 +10,7 @@ import ParamItem from '@/app/components/base/param-item'
 import Tooltip from '@/app/components/base/tooltip'
 
 const MIN = 1
-const MAX = 6
+const MAX = 20
 const ParamConfigContent: FC = () => {
   const { t } = useTranslation()
 

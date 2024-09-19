@@ -13,7 +13,7 @@ import { TransferMethod } from '@/types/app'
 import ParamItem from '@/app/components/base/param-item'
 
 const MIN = 1
-const MAX = 6
+const MAX = 20
 type ParamConfigContentProps = {
   onChange?: OnFeaturesChange
 }
