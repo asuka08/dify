@@ -37,7 +37,7 @@ class AppService:
         """
         filters = [App.tenant_id == tenant_id, App.is_universal == False]
 
-        if not current_user.real_is_admin_or_owner:
+        if not current_user.is_admin_or_owner:
             filters.append(App.account_id == current_user.id)
 
         if args["mode"] == "workflow":
