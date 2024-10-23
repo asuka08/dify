@@ -176,11 +176,18 @@ class OpsTraceManager:
             return None
 
         app: App = db.session.query(App).filter(App.id == app_id).first()
+
+        if app is None:
+            return None
+
         app_ops_trace_config = json.loads(app.tracing) if app.tracing else None
 
-        if app_ops_trace_config is not None:
-            tracing_provider = app_ops_trace_config.get("tracing_provider")
-        else:
+        if app_ops_trace_config is None:
+            return None
+
+        tracing_provider = app_ops_trace_config.get("tracing_provider")
+
+        if tracing_provider is None or tracing_provider not in provider_config_map:
             return None
 
         # decrypt_token
@@ -351,8 +358,8 @@ class TraceTask:
         workflow_run_id = workflow_run.id
         workflow_run_elapsed_time = workflow_run.elapsed_time
         workflow_run_status = workflow_run.status
-        workflow_run_inputs = json.loads(workflow_run.inputs) if workflow_run.inputs else {}
-        workflow_run_outputs = json.loads(workflow_run.outputs) if workflow_run.outputs else {}
+        workflow_run_inputs = workflow_run.inputs_dict
+        workflow_run_outputs = workflow_run.outputs_dict
         workflow_run_version = workflow_run.version
         error = workflow_run.error or ""
 
@@ -701,7 +708,7 @@ class TraceQueueManager:
                 trace_task.app_id = self.app_id
                 trace_manager_queue.put(trace_task)
         except Exception as e:
-            logging.debug(f"Error adding trace task: {e}")
+            logging.error(f"Error adding trace task: {e}")
         finally:
             self.start_timer()
 
@@ -720,7 +727,7 @@ class TraceQueueManager:
             if tasks:
                 self.send_to_celery(tasks)
         except Exception as e:
-            logging.debug(f"Error processing trace tasks: {e}")
+            logging.error(f"Error processing trace tasks: {e}")
 
     def start_timer(self):
         global trace_manager_timer

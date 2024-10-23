@@ -1,10 +1,10 @@
-import os
 from functools import wraps
 
 from flask import request
 from flask_restful import Resource, reqparse
 from werkzeug.exceptions import NotFound, Unauthorized
 
+from configs import dify_config
 from constants.languages import supported_language
 from controllers.console import api
 from extensions.ext_database import db
@@ -14,7 +14,7 @@ from models.model import App, InstalledApp, RecommendedApp
 def admin_required(view):
     @wraps(view)
     def decorated(*args, **kwargs):
-        if not os.getenv("ADMIN_API_KEY"):
+        if not dify_config.ADMIN_API_KEY:
             raise Unauthorized("API key is invalid.")
 
         auth_header = request.headers.get("Authorization")
@@ -30,7 +30,7 @@ def admin_required(view):
         if auth_scheme != "bearer":
             raise Unauthorized("Invalid Authorization header format. Expected 'Bearer <api-key>' format.")
 
-        if os.getenv("ADMIN_API_KEY") != auth_token:
+        if dify_config.ADMIN_API_KEY != auth_token:
             raise Unauthorized("API key is invalid.")
 
         return view(*args, **kwargs)
