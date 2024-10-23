@@ -150,7 +150,9 @@ class AccountService:
         return account
 
     @staticmethod
-    def get_account_jwt_token(account, *, exp: timedelta = timedelta(days=30)):
+    def get_account_jwt_token(account: Account) -> str:
+        exp_dt = datetime.now(timezone.utc) + timedelta(minutes=dify_config.ACCESS_TOKEN_EXPIRE_MINUTES)
+        exp = int(exp_dt.timestamp())
         payload = {
             "user_id": account.id,
             "exp": exp,
