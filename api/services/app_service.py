@@ -1,7 +1,7 @@
 import json
 import logging
-from datetime import datetime, timezone
-from typing import cast
+from datetime import UTC, datetime
+from typing import Optional, cast
 
 import yaml
 from flask_login import current_user
@@ -31,6 +31,7 @@ class AppService:
     def get_paginate_apps(self, tenant_id: str, args: dict, current_user: Account) -> Pagination:
         """
         Get app list with pagination
+        :param user_id: user id
         :param tenant_id: tenant id
         :param args: request args
         :return:
@@ -49,6 +50,8 @@ class AppService:
         elif args["mode"] == "channel":
             filters.append(App.mode == AppMode.CHANNEL.value)
 
+        if args.get("is_created_by_me", False):
+            filters.append(App.created_by == user_id)
         if args.get("name"):
             name = args["name"][:30]
             filters.append(App.name.ilike(f"%{name}%"))
@@ -88,12 +91,12 @@ class AppService:
             # get default model instance
             try:
                 model_instance = model_manager.get_default_model_instance(
-                    tenant_id=account.current_tenant_id, model_type=ModelType.LLM
+                    tenant_id=account.current_tenant_id or "", model_type=ModelType.LLM
                 )
             except (ProviderTokenNotInitError, LLMBadRequestError):
                 model_instance = None
             except Exception as e:
-                logging.exception(e)
+                logging.exception(f"Get default model instance failed, tenant_id: {tenant_id}")
                 model_instance = None
 
             if model_instance:
@@ -105,6 +108,8 @@ class AppService:
                 else:
                     llm_model = cast(LargeLanguageModel, model_instance.model_type_instance)
                     model_schema = llm_model.get_model_schema(model_instance.model, model_instance.credentials)
+                    if model_schema is None:
+                        raise ValueError(f"model schema not found for model {model_instance.model}")
 
                     default_model_dict = {
                         "provider": model_instance.provider,
@@ -114,7 +119,7 @@ class AppService:
                     }
             else:
                 provider, model = model_manager.get_default_provider_model_name(
-                    tenant_id=account.current_tenant_id, model_type=ModelType.LLM
+                    tenant_id=account.current_tenant_id or "", model_type=ModelType.LLM
                 )
                 default_model_config["model"]["provider"] = provider
                 default_model_config["model"]["name"] = model
@@ -276,7 +281,7 @@ class AppService:
         """
         # get original app model config
         if app.mode == AppMode.AGENT_CHAT.value or app.is_agent:
-            model_config: AppModelConfig = app.app_model_config
+            model_config = app.app_model_config
             agent_mode = model_config.agent_mode_dict
             # decrypt agent tool parameters if it's secret-input
             for tool in agent_mode.get("tools") or []:
@@ -344,7 +349,7 @@ class AppService:
         app.icon_background = args.get("icon_background")
         app.use_icon_as_answer_icon = args.get("use_icon_as_answer_icon", False)
         app.updated_by = current_user.id
-        app.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        app.updated_at = datetime.now(UTC).replace(tzinfo=None)
         db.session.commit()
 
         if app.max_active_requests is not None:
@@ -361,7 +366,7 @@ class AppService:
         """
         app.name = name
         app.updated_by = current_user.id
-        app.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        app.updated_at = datetime.now(UTC).replace(tzinfo=None)
         db.session.commit()
 
         return app
@@ -377,7 +382,7 @@ class AppService:
         app.icon = icon
         app.icon_background = icon_background
         app.updated_by = current_user.id
-        app.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        app.updated_at = datetime.now(UTC).replace(tzinfo=None)
         db.session.commit()
 
         return app
@@ -394,7 +399,7 @@ class AppService:
 
         app.enable_site = enable_site
         app.updated_by = current_user.id
-        app.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        app.updated_at = datetime.now(UTC).replace(tzinfo=None)
         db.session.commit()
 
         return app
@@ -411,7 +416,7 @@ class AppService:
 
         app.enable_api = enable_api
         app.updated_by = current_user.id
-        app.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+        app.updated_at = datetime.now(UTC).replace(tzinfo=None)
         db.session.commit()
 
         return app
@@ -435,7 +440,7 @@ class AppService:
         """
         app_mode = AppMode.value_of(app_model.mode)
 
-        meta = {"tool_icons": {}}
+        meta: dict = {"tool_icons": {}}
 
         if app_mode in {AppMode.ADVANCED_CHAT, AppMode.WORKFLOW}:
             workflow = app_model.workflow
@@ -457,12 +462,12 @@ class AppService:
                         }
                     )
         else:
-            app_model_config: AppModelConfig = app_model.app_model_config
+            app_model_config: Optional[AppModelConfig] = app_model.app_model_config
 
             if not app_model_config:
                 return meta
 
-            agent_config = app_model_config.agent_mode_dict or {}
+            agent_config = app_model_config.agent_mode_dict
 
             # get all tools
             tools = agent_config.get("tools", [])
@@ -473,16 +478,18 @@ class AppService:
             keys = list(tool.keys())
             if len(keys) >= 4:
                 # current tool standard
-                provider_type = tool.get("provider_type")
-                provider_id = tool.get("provider_id")
-                tool_name = tool.get("tool_name")
+                provider_type = tool.get("provider_type", "")
+                provider_id = tool.get("provider_id", "")
+                tool_name = tool.get("tool_name", "")
                 if provider_type == "builtin":
                     meta["tool_icons"][tool_name] = url_prefix + provider_id + "/icon"
                 elif provider_type == "api":
                     try:
-                        provider: ApiToolProvider = (
+                        provider: Optional[ApiToolProvider] = (
                             db.session.query(ApiToolProvider).filter(ApiToolProvider.id == provider_id).first()
                         )
+                        if provider is None:
+                            raise ValueError(f"provider not found for tool {tool_name}")
                         meta["tool_icons"][tool_name] = json.loads(provider.icon)
                     except:
                         meta["tool_icons"][tool_name] = {"background": "#252525", "content": "\ud83d\ude01"}

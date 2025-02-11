@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useBoolean } from 'ahooks'
 import { useSelectedLayoutSegment } from 'next/navigation'
 import { Bars3Icon } from '@heroicons/react/20/solid'
+import { useContextSelector } from 'use-context-selector'
 import HeaderBillingBtn from '../billing/header-billing-btn'
 import AccountDropdown from './account-dropdown'
 import AppNav from './app-nav'
@@ -12,12 +13,14 @@ import EnvNav from './env-nav'
 import ExploreNav from './explore-nav'
 import ToolsNav from './tools-nav'
 import GithubStar from './github-star'
+import LicenseNav from './license-env'
 import { WorkspaceProvider } from '@/context/workspace-context'
-import { useAppContext } from '@/context/app-context'
+import AppContext, { useAppContext } from '@/context/app-context'
 import LogoSite from '@/app/components/base/logo/logo-site'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import { useProviderContext } from '@/context/provider-context'
 import { useModalContext } from '@/context/modal-context'
+import { LicenseStatus } from '@/types/feature'
 
 const navClassName = `
   flex items-center relative mr-0 sm:mr-3 px-3 h-8 rounded-xl
@@ -48,7 +51,7 @@ const Header = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSegment])
   return (
-    <div className='flex flex-1 items-center justify-between px-4'>
+    <div className='flex flex-1 items-center justify-between px-4 bg-background-body'>
       <div className='flex items-center'>
         {isMobile && <div
           className='flex items-center justify-center h-8 w-8 cursor-pointer'
@@ -60,7 +63,7 @@ const Header = () => {
           <Link href="/apps" className='flex items-center mr-4'>
             <LogoSite className='object-contain' />
           </Link>
-          <GithubStar />
+          {systemFeatures.license.status === LicenseStatus.NONE && <GithubStar />}
         </>}
       </div>
       {isMobile && (
@@ -68,7 +71,7 @@ const Header = () => {
           <Link href="/apps" className='flex items-center mr-4'>
             <LogoSite />
           </Link>
-          <GithubStar />
+          {systemFeatures.license.status === LicenseStatus.NONE && <GithubStar />}
         </div>
       )}
       {!isMobile && (
@@ -80,6 +83,7 @@ const Header = () => {
         </div>
       )}
       <div className='flex items-center flex-shrink-0'>
+        <LicenseNav />
         <EnvNav />
         {enableBilling && (
           <div className='mr-3 select-none'>

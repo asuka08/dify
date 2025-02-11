@@ -1,6 +1,6 @@
 from collections.abc import Generator
 
-import tos
+import tos  # type: ignore
 
 from configs import dify_config
 from extensions.storage.base_storage import BaseStorage
@@ -24,15 +24,14 @@ class VolcengineTosStorage(BaseStorage):
 
     def load_once(self, filename: str) -> bytes:
         data = self.client.get_object(bucket=self.bucket_name, key=filename).read()
+        if not isinstance(data, bytes):
+            raise TypeError("Expected bytes, got {}".format(type(data).__name__))
         return data
 
     def load_stream(self, filename: str) -> Generator:
-        def generate(filename: str = filename) -> Generator:
-            response = self.client.get_object(bucket=self.bucket_name, key=filename)
-            while chunk := response.read(4096):
-                yield chunk
-
-        return generate()
+        response = self.client.get_object(bucket=self.bucket_name, key=filename)
+        while chunk := response.read(4096):
+            yield chunk
 
     def download(self, filename, target_filepath):
         self.client.get_object_to_file(bucket=self.bucket_name, key=filename, file_path=target_filepath)

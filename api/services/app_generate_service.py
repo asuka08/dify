@@ -96,12 +96,17 @@ class AppGenerateService:
         if app_model.mode == AppMode.ADVANCED_CHAT.value:
             workflow = cls._get_workflow(app_model, InvokeFrom.DEBUGGER)
             return AdvancedChatAppGenerator().single_iteration_generate(
-                app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, stream=streaming
+                app_model=app_model,
+                workflow=workflow,
+                node_id=node_id,
+                user=user,
+                args=args,
+                streaming=streaming,
             )
         elif app_model.mode == AppMode.WORKFLOW.value:
             workflow = cls._get_workflow(app_model, InvokeFrom.DEBUGGER)
             return WorkflowAppGenerator().single_iteration_generate(
-                app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, stream=streaming
+                app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, streaming=streaming
             )
         else:
             raise ValueError(f"Invalid app mode {app_model.mode}")
@@ -114,7 +119,7 @@ class AppGenerateService:
         message_id: str,
         invoke_from: InvokeFrom,
         streaming: bool = True,
-    ) -> Union[dict, Generator]:
+    ) -> Union[Mapping, Generator]:
         """
         Generate more like this
         :param app_model: app model

@@ -1,6 +1,6 @@
 from collections.abc import Generator
 
-from obs import ObsClient
+from obs import ObsClient  # type: ignore
 
 from configs import dify_config
 from extensions.storage.base_storage import BaseStorage
@@ -23,16 +23,13 @@ class HuaweiObsStorage(BaseStorage):
         self.client.putObject(bucketName=self.bucket_name, objectKey=filename, content=data)
 
     def load_once(self, filename: str) -> bytes:
-        data = self.client.getObject(bucketName=self.bucket_name, objectKey=filename)["body"].response.read()
+        data: bytes = self.client.getObject(bucketName=self.bucket_name, objectKey=filename)["body"].response.read()
         return data
 
     def load_stream(self, filename: str) -> Generator:
-        def generate(filename: str = filename) -> Generator:
-            response = self.client.getObject(bucketName=self.bucket_name, objectKey=filename)["body"].response
-            while chunk := response.read(4096):
-                yield chunk
-
-        return generate()
+        response = self.client.getObject(bucketName=self.bucket_name, objectKey=filename)["body"].response
+        while chunk := response.read(4096):
+            yield chunk
 
     def download(self, filename, target_filepath):
         self.client.getObject(bucketName=self.bucket_name, objectKey=filename, downloadPath=target_filepath)
