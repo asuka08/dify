@@ -38,6 +38,7 @@ const Header = () => {
   const [isShowNavMenu, { toggle, setFalse: hideNavMenu }] = useBoolean(false)
   const { enableBilling, plan } = useProviderContext()
   const { setShowPricingModal, setShowAccountSettingModal } = useModalContext()
+  const systemFeatures = useContextSelector(AppContext, v => v.systemFeatures)
   const isFreePlan = plan.type === 'sandbox'
   const handlePlanClick = useCallback(() => {
     if (isFreePlan)
