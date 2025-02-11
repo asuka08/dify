@@ -42,7 +42,7 @@ class AppGenerateService:
                     user=user,
                     args=args,
                     invoke_from=invoke_from,
-                    stream=streaming
+                    streaming=streaming
                 )
             else:
                 return CompletionAppGenerator().generate(
@@ -50,7 +50,7 @@ class AppGenerateService:
                     user=user,
                     args=args,
                     invoke_from=invoke_from,
-                    stream=streaming
+                    streaming=streaming
                 )
         elif app_model.mode == AppMode.AGENT_CHAT.value or app_model.is_agent:
             return AgentChatAppGenerator().generate(
@@ -58,7 +58,7 @@ class AppGenerateService:
                 user=user,
                 args=args,
                 invoke_from=invoke_from,
-                stream=streaming
+                streaming=streaming
             )
         elif app_model.mode == AppMode.CHAT.value:
             return ChatAppGenerator().generate(
@@ -66,7 +66,7 @@ class AppGenerateService:
                 user=user,
                 args=args,
                 invoke_from=invoke_from,
-                stream=streaming
+                streaming=streaming
             )
         elif app_model.mode == AppMode.ADVANCED_CHAT.value:
             workflow = cls._get_workflow(app_model, invoke_from)
@@ -76,7 +76,7 @@ class AppGenerateService:
                 user=user,
                 args=args,
                 invoke_from=invoke_from,
-                stream=streaming
+                streaming=streaming
             )
         elif app_model.mode == AppMode.WORKFLOW.value:
             workflow = cls._get_workflow(app_model, invoke_from)
@@ -86,7 +86,7 @@ class AppGenerateService:
                 user=user,
                 args=args,
                 invoke_from=invoke_from,
-                stream=streaming
+                streaming=streaming
             )
         else:
             raise ValueError(f'Invalid app mode {app_model.mode}')
