@@ -28,7 +28,7 @@ from tasks.remove_app_and_related_data_task import remove_app_and_related_data_t
 
 
 class AppService:
-    def get_paginate_apps(self, tenant_id: str, args: dict, current_user: Account) -> Pagination:
+    def get_paginate_apps(self, user_id: str, tenant_id: str, args: dict) -> Pagination | None:
         """
         Get app list with pagination
         :param user_id: user id
@@ -37,9 +37,6 @@ class AppService:
         :return:
         """
         filters = [App.tenant_id == tenant_id, App.is_universal == False]
-
-        if not current_user.is_admin_or_owner:
-            filters.append(App.account_id == current_user.id)
 
         if args["mode"] == "workflow":
             filters.append(App.mode.in_([AppMode.WORKFLOW.value, AppMode.COMPLETION.value]))
