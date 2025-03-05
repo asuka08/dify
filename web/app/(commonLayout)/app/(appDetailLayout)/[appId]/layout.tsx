@@ -90,7 +90,7 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
       },
     ]
     return navs
-  }, [t])
+  }, [])
 
   useEffect(() => {
     if (appDetail) {
@@ -102,6 +102,7 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
       // if ((appDetail.mode === 'advanced-chat' || appDetail.mode === 'workflow') && (pathname).endsWith('workflow'))
       //   setAppSiderbarExpand('collapse')
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appDetail, isMobile])
 
   useEffect(() => {
@@ -115,7 +116,7 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
     }).finally(() => {
       setIsLoadingAppDetail(false)
     })
-  }, [appId, router, setAppDetail])
+  }, [appId, pathname])
 
   useEffect(() => {
     if (!appDetailRes || isLoadingCurrentWorkspace || isLoadingAppDetail)
@@ -142,7 +143,8 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
         })
       }
     }
-  }, [appDetailRes, appId, getNavigations, isCurrentWorkspaceEditor, isLoadingAppDetail, isLoadingCurrentWorkspace, pathname, router, setAppDetail, systemFeatures.enable_web_sso_switch_component])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appDetailRes, isCurrentWorkspaceEditor, isLoadingAppDetail, isLoadingCurrentWorkspace, systemFeatures.enable_web_sso_switch_component])
 
   useUnmount(() => {
     setAppDetail()
@@ -157,9 +159,9 @@ const AppDetailLayout: FC<IAppDetailLayoutProps> = (props) => {
   }
 
   return (
-    <div className={cn(s.app, 'flex', 'overflow-hidden')}>
+    <div className={cn(s.app, 'flex relative', 'overflow-hidden')}>
       {appDetail && (
-        <AppSideBar title={appDetail.name} icon={appDetail.icon} icon_background={appDetail.icon_background} desc={appDetail.mode} navigation={navigation} />
+        <AppSideBar title={appDetail.name} icon={appDetail.icon} icon_background={appDetail.icon_background as string} desc={appDetail.mode} navigation={navigation} />
       )}
       <div className="bg-components-panel-bg grow overflow-hidden">
         {children}

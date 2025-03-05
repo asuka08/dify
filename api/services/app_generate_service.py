@@ -81,12 +81,14 @@ class AppGenerateService:
         elif app_model.mode == AppMode.WORKFLOW.value:
             workflow = cls._get_workflow(app_model, invoke_from)
             return WorkflowAppGenerator().generate(
-                app_model=app_model,
-                workflow=workflow,
-                user=user,
-                args=args,
-                invoke_from=invoke_from,
-                streaming=streaming
+                            app_model=app_model,
+                            workflow=workflow,
+                            user=user,
+                            args=args,
+                            invoke_from=invoke_from,
+                            streaming=streaming,
+                            call_depth=0,
+                            workflow_thread_pool_id=None,
             )
         else:
             raise ValueError(f'Invalid app mode {app_model.mode}')
@@ -95,18 +97,17 @@ class AppGenerateService:
     def generate_single_iteration(cls, app_model: App, user: Account, node_id: str, args: Any, streaming: bool = True):
         if app_model.mode == AppMode.ADVANCED_CHAT.value:
             workflow = cls._get_workflow(app_model, InvokeFrom.DEBUGGER)
-            return AdvancedChatAppGenerator().single_iteration_generate(
-                app_model=app_model,
-                workflow=workflow,
-                node_id=node_id,
-                user=user,
-                args=args,
-                streaming=streaming,
+            return AdvancedChatAppGenerator.convert_to_event_stream(
+                AdvancedChatAppGenerator().single_iteration_generate(
+                    app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, streaming=streaming
+                )
             )
         elif app_model.mode == AppMode.WORKFLOW.value:
             workflow = cls._get_workflow(app_model, InvokeFrom.DEBUGGER)
-            return WorkflowAppGenerator().single_iteration_generate(
-                app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, streaming=streaming
+            return AdvancedChatAppGenerator.convert_to_event_stream(
+                WorkflowAppGenerator().single_iteration_generate(
+                    app_model=app_model, workflow=workflow, node_id=node_id, user=user, args=args, streaming=streaming
+                )
             )
         else:
             raise ValueError(f"Invalid app mode {app_model.mode}")

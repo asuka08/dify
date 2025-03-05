@@ -17,6 +17,7 @@ from core.app.entities.app_invoke_entities import (
 )
 from core.app.entities.queue_entities import (
     QueueAdvancedChatMessageEndEvent,
+    QueueAgentLogEvent,
     QueueAnnotationReplyEvent,
     QueueErrorEvent,
     QueueIterationCompletedEvent,
@@ -219,7 +220,9 @@ class AdvancedChatAppGenerateTaskPipeline:
             and features_dict["text_to_speech"].get("enabled")
             and features_dict["text_to_speech"].get("autoPlay") == "enabled"
         ):
-            tts_publisher = AppGeneratorTTSPublisher(tenant_id, features_dict["text_to_speech"].get("voice"))
+            tts_publisher = AppGeneratorTTSPublisher(
+                tenant_id, features_dict["text_to_speech"].get("voice"), features_dict["text_to_speech"].get("language")
+            )
 
         for response in self._process_stream_response(tts_publisher=tts_publisher, trace_manager=trace_manager):
             while True:
@@ -247,7 +250,7 @@ class AdvancedChatAppGenerateTaskPipeline:
                 else:
                     start_listener_time = time.time()
                     yield MessageAudioStreamResponse(audio=audio_trunk.audio, task_id=task_id)
-            except Exception as e:
+            except Exception:
                 logger.exception(f"Failed to listen audio message, task_id: {task_id}")
                 break
         if tts_publisher:
@@ -579,6 +582,15 @@ class AdvancedChatAppGenerateTaskPipeline:
                         session.commit()
 
                     yield workflow_finish_resp
+                elif event.stopped_by in (
+                    QueueStopEvent.StopBy.INPUT_MODERATION,
+                    QueueStopEvent.StopBy.ANNOTATION_REPLY,
+                ):
+                    # When hitting input-moderation or annotation-reply, the workflow will not start
+                    with Session(db.engine, expire_on_commit=False) as session:
+                        # Save message
+                        self._save_message(session=session)
+                        session.commit()
 
                 yield self._message_end_to_stream_response()
                 break
@@ -640,6 +652,10 @@ class AdvancedChatAppGenerateTaskPipeline:
                     session.commit()
 
                 yield self._message_end_to_stream_response()
+            elif isinstance(event, QueueAgentLogEvent):
+                yield self._workflow_cycle_manager._handle_agent_log(
+                    task_id=self._application_generate_entity.task_id, event=event
+                )
             else:
                 continue
 
