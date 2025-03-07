@@ -63,8 +63,8 @@ class SystemFeatureModel(BaseModel):
     enable_email_code_login: bool = False
     enable_email_password_login: bool = True
     enable_social_oauth_login: bool = False
-    is_allow_register: bool = False
-    is_allow_create_workspace: bool = False
+    is_allow_register: bool = True
+    is_allow_create_workspace: bool = True
     is_email_setup: bool = False
     license: LicenseModel = LicenseModel()
 
@@ -102,8 +102,8 @@ class FeatureService:
         system_features.enable_email_code_login = dify_config.ENABLE_EMAIL_CODE_LOGIN
         system_features.enable_email_password_login = dify_config.ENABLE_EMAIL_PASSWORD_LOGIN
         system_features.enable_social_oauth_login = dify_config.ENABLE_SOCIAL_OAUTH_LOGIN
-        system_features.is_allow_register = dify_config.ALLOW_REGISTER
-        system_features.is_allow_create_workspace = dify_config.ALLOW_CREATE_WORKSPACE
+        system_features.is_allow_register = True
+        system_features.is_allow_create_workspace = True
         system_features.is_email_setup = dify_config.MAIL_TYPE is not None and dify_config.MAIL_TYPE != ""
 
     @classmethod
@@ -172,10 +172,10 @@ class FeatureService:
             features.enable_email_password_login = enterprise_info["enable_email_password_login"]
 
         if "is_allow_register" in enterprise_info:
-            features.is_allow_register = enterprise_info["is_allow_register"]
+            features.is_allow_register = True
 
         if "is_allow_create_workspace" in enterprise_info:
-            features.is_allow_create_workspace = enterprise_info["is_allow_create_workspace"]
+            features.is_allow_create_workspace = True
 
         if "license" in enterprise_info:
             license_info = enterprise_info["license"]
