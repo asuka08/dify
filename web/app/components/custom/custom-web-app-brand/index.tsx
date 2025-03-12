@@ -5,7 +5,6 @@ import {
   RiLoader2Line,
 } from '@remixicon/react'
 import s from './style.module.css'
-import LogoSite from '@/app/components/base/logo/logo-site'
 import Switch from '@/app/components/base/switch'
 import Button from '@/app/components/base/button'
 import { MessageDotsCircle } from '@/app/components/base/icons/src/vender/solid/communication'
@@ -116,7 +115,7 @@ const CustomWebAppBrand = () => {
             <div className='grow h-2 rounded-sm bg-white opacity-50' />
           </div>
         </div>
-        <div className='flex items-center h-5 justify-between'>
+        {/* <div className='flex items-center h-5 justify-between'>
           <div className='w-[369px] h-1.5 rounded-sm bg-gray-200 opacity-80' />
           {
             !webappBrandRemoved && (
@@ -130,7 +129,7 @@ const CustomWebAppBrand = () => {
               </div>
             )
           }
-        </div>
+        </div> */}
       </div>
       <div className='flex items-center justify-between mb-2 px-4 h-14 rounded-xl border-[0.5px] border-gray-200 bg-gray-50 text-sm font-medium text-gray-900'>
         {t('custom.webapp.removeBrand')}

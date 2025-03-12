@@ -106,7 +106,7 @@ const Sidebar = ({ isPanel }: Props) => {
       </div>
       <div className='shrink-0 px-3 py-4'>
         <Button variant='secondary-accent' className='w-full justify-center' onClick={handleNewConversation}>
-          <RiEditBoxLine className='w-4 h-4 mr-1' />
+          <RiEditBoxLine className='w-4 h-4 mr-1' color='#000' />
           {t('share.chat.newChat')}
         </Button>
       </div>

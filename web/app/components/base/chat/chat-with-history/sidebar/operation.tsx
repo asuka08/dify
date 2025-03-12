@@ -83,8 +83,8 @@ const Operation: FC<Props> = ({
           </div>
           {isShowRenameConversation && (
             <div className={cn('flex items-center space-x-1 px-2 py-1.5 rounded-lg text-text-secondary system-md-regular cursor-pointer hover:bg-state-base-hover')} onClick={onRenameConversation}>
-              <RiEditLine className='shrink-0 w-4 h-4 text-text-tertiary' />
-              <span className='grow'>{t('explore.sidebar.action.rename')}</span>
+              <RiEditLine className='shrink-0 w-4 h-4 text-text-tertiary' color='#000' />
+              <span className='grow' style={{ color: '#000' }}>{t('explore.sidebar.action.rename')}</span>
             </div>
           )}
           {isShowDelete && (

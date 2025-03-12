@@ -56,11 +56,12 @@ const InputsFormNode = ({
               className='w-full'
               onClick={() => handleStartChat(() => setCollapsed(true))}
               style={
-                themeBuilder?.theme
-                  ? {
-                    backgroundColor: themeBuilder?.theme.primaryColor,
-                  }
-                  : {}
+                // themeBuilder?.theme
+                //   ? {
+                //     backgroundColor: themeBuilder?.theme.primaryColor,
+                //   }
+                //   : {}
+                { background: '#000' }
               }
             >{t('share.chat.startChat')}</Button>
           </div>
