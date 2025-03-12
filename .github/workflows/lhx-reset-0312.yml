@@ -1,8 +1,8 @@
-name: Deploy Dev
+name: Lhx Reset 0312
 
 on:
   workflow_run:
-    workflows: ["Build and Push API & Web"]
+    workflows: ["Build CI Lhx Reset 0312"]
     branches:
       - "ci/lhx-reset-0312"
     types:
