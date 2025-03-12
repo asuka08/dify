@@ -5,6 +5,7 @@ on:
     branches:
       - "main"
       - "deploy/dev"
+      - "ci/lhx-reset-0312"
   release:
     types: [published]
 
