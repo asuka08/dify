@@ -84,7 +84,7 @@ const Sidebar = () => {
           className='justify-start w-full'
           onClick={handleNewConversation}
         >
-          <Edit05 className='mr-2 w-4 h-4' />
+          <Edit05 className='mr-2 w-4 h-4' style={{ color: '#000' }} />
           {t('share.chat.newChat')}
         </Button>
       </div>

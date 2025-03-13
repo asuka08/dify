@@ -146,7 +146,7 @@ const ConfigPanel = () => {
               </div>
               : <div>
               </div>}
-            {
+            {/* {
               customConfig?.remove_webapp_brand
                 ? null
                 : (
@@ -161,7 +161,7 @@ const ConfigPanel = () => {
                     </div>
                   </div>
                 )
-            }
+            } */}
           </div>
         )
       }

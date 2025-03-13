@@ -58,11 +58,14 @@ const Operation = forwardRef<HTMLDivElement, OperationProps>(({
           variant='primary'
           onClick={onSend}
           style={
-            theme
-              ? {
-                backgroundColor: theme.primaryColor,
-              }
-              : {}
+            // theme
+            //   ? {
+            //     backgroundColor: theme.primaryColor,
+            //   }
+            //   : {}
+            {
+              backgroundColor: '#000',
+            }
           }
         >
           <RiSendPlane2Fill className='w-4 h-4' />
