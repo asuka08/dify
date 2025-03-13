@@ -83,6 +83,7 @@ const Sidebar = () => {
           variant='secondary-accent'
           className='justify-start w-full'
           onClick={handleNewConversation}
+          style={{ color: '#000' }}
         >
           <Edit05 className='mr-2 w-4 h-4' style={{ color: '#000' }} />
           {t('share.chat.newChat')}

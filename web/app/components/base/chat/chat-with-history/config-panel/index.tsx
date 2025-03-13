@@ -125,6 +125,7 @@ const ConfigPanel = () => {
                 variant='primary'
                 size='large'
                 onClick={handleStartChat}
+                style={{ backgroundColor: '#000' }}
               >
                 <MessageDotsCircle className='mr-2 w-4 h-4 text-white' />
                 {t('share.chat.startChat')}

@@ -128,11 +128,12 @@ const ConfigPanel = () => {
             <div className='p-6 rounded-b-xl'>
               <Form />
               <Button
-                styleCss={CssTransform(themeBuilder.theme?.backgroundButtonDefaultColorStyle ?? '')}
+                // styleCss={CssTransform(themeBuilder.theme?.backgroundButtonDefaultColorStyle ?? '')}
                 className={cn(inputsForms.length && !isMobile && 'ml-[136px]')}
                 variant='primary'
                 size='large'
                 onClick={handleStartChat}
+                style={{ backgroundColor: '#000' }}
               >
                 <MessageDotsCircle className='mr-2 w-4 h-4 text-white' />
                 {t('share.chat.startChat')}
